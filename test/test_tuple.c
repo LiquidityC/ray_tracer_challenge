@@ -1,3 +1,4 @@
+#include <math.h>
 #include "unity.h"
 #include "tuple.h"
 
@@ -88,6 +89,49 @@ void test_divide(void)
     TEST_ASSERT_TRUE(tuple_equal(&r, &tuple(0.5, -1, 1.5, -2)));
 }
 
+void test_magnitude(void)
+{
+    Vector v = vector(0, 1, 0);
+    TEST_ASSERT_EQUAL_FLOAT(1, tuple_magnitude(&v));
+
+    v = vector(0, 0, 1);
+    TEST_ASSERT_EQUAL_FLOAT(1, tuple_magnitude(&v));
+
+    v = vector(1, 2, 3);
+    TEST_ASSERT_EQUAL_FLOAT((float) sqrt(14), tuple_magnitude(&v));
+
+    v = vector(-1, -2, -3);
+    TEST_ASSERT_EQUAL_FLOAT((float) sqrt(14), tuple_magnitude(&v));
+}
+
+void test_normalize(void)
+{
+    Vector v = tuple_normalize(&vector(4, 0, 0));
+    TEST_ASSERT_TRUE(tuple_equal(&vector(1, 0, 0), &v));
+
+    v = tuple_normalize(&vector(1, 2, 3));
+    TEST_ASSERT_TRUE(tuple_equal(&vector(1/sqrt(14), 2/sqrt(14), 3/sqrt(14)), &v));
+
+    TEST_ASSERT_EQUAL_FLOAT(1, tuple_magnitude(&v));
+}
+
+void test_dotproduct(void)
+{
+    Vector a = vector(1, 2, 3);
+    Vector b = vector(2, 3, 4);
+    TEST_ASSERT_EQUAL_FLOAT(20, tuple_dot(&a, &b));
+}
+
+void test_crossproduct(void)
+{
+    Vector a = vector(1, 2, 3);
+    Vector b = vector(2, 3, 4);
+    Vector cross_a_b = tuple_cross(&a, &b);
+    Vector cross_b_a = tuple_cross(&b, &a);
+    TEST_ASSERT_TRUE(tuple_equal(&cross_a_b, &vector(-1, 2, -1)));
+    TEST_ASSERT_TRUE(tuple_equal(&cross_b_a, &vector(-1, 2, -1)));
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -99,5 +143,8 @@ int main(void)
     RUN_TEST(test_negate);
     RUN_TEST(test_multiply);
     RUN_TEST(test_divide);
+    RUN_TEST(test_magnitude);
+    RUN_TEST(test_normalize);
+    RUN_TEST(test_crossproduct);
     return UNITY_END();
 }

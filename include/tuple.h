@@ -8,6 +8,9 @@ typedef struct Tuple
     float x, y, z, w;
 } Tuple;
 
+typedef Tuple Vector;
+typedef Tuple Point;
+
 #define tuple(x, y, z, w) ((Tuple) { x, y, z, w })
 #define point(x, y, z) ((Tuple) { x, y, z, 1.0 })
 #define vector(x, y, z) ((Tuple) { x, y, z, 0.0 })
@@ -15,42 +18,62 @@ typedef struct Tuple
 /**
  * \brief Checks if a tuple is a point
  */
-bool tuple_is_point(Tuple *t);
+bool tuple_is_point(const Tuple *t);
 
 /**
  * \brief Checks if a tuple is a vector
  */
-bool tuple_is_vector(Tuple *t);
+bool tuple_is_vector(const Tuple *t);
 
 /**
  * \brief Compare two tuples
  */
-bool tuple_equal(Tuple *a, Tuple *b);
+bool tuple_equal(const Tuple *a, const Tuple *b);
 
 /**
  * \brief Add two tuples
  */
-Tuple tuple_add(Tuple *a, Tuple *b);
+Tuple tuple_add(const Tuple *a, const Tuple *b);
 
 /**
  * \brief Subtract two tuples
  */
-Tuple tuple_sub(Tuple *a, Tuple *b);
+Tuple tuple_sub(const Tuple *a, const Tuple *b);
 
 /**
  * \brief Negate a tuple
  */
-Tuple tuple_neg(Tuple *t);
+Tuple tuple_neg(const Tuple *t);
 
 /**
  * \brief Multiply a tuple with a scalar
  */
-Tuple tuple_mul(Tuple *t, float v);
+Tuple tuple_mul(const Tuple *t, float v);
 
 /**
  * \brief Divide a tuple with a scalar
  */
-Tuple tuple_div(Tuple *t, float v);
+Tuple tuple_div(const Tuple *t, float v);
+
+/**
+ * \brief Magnitude
+ */
+float tuple_magnitude(const Tuple *t);
+
+/**
+ * \brief Normalize a tuple
+ */
+Tuple tuple_normalize(const Tuple *t);
+
+/**
+ * \brief Tuple dot product
+ */
+float tuple_dot(const Tuple *a, const Tuple *b);
+
+/**
+ * \brief Tuple cross product
+ */
+Tuple tuple_cross(const Tuple *a, const Tuple *b);
 
 #endif // _TUPLE_H_
 
