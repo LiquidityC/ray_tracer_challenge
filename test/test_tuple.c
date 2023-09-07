@@ -129,7 +129,7 @@ void test_crossproduct(void)
     Vector cross_a_b = tuple_cross(&a, &b);
     Vector cross_b_a = tuple_cross(&b, &a);
     TEST_ASSERT_TRUE(tuple_equal(&cross_a_b, &vector(-1, 2, -1)));
-    TEST_ASSERT_TRUE(tuple_equal(&cross_b_a, &vector(-1, 2, -1)));
+    TEST_ASSERT_TRUE(tuple_equal(&cross_b_a, &vector(1, -2, 1)));
 }
 
 int main(void)
