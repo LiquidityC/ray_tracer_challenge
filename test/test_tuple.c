@@ -147,6 +147,21 @@ static void test_color_arithmetic(void)
     Color res = tuple_add(&c1, &c2);
     Color exp = color(1.6, 0.7, 1.0);
     TEST_ASSERT_TRUE(tuple_equal(&exp, &res));
+
+    res = tuple_sub(&c1, &c2);
+    exp = color(0.2, 0.5, 0.5);
+    TEST_ASSERT_TRUE(tuple_equal(&exp, &res));
+
+    Color c = color(0.2, 0.3, 0.4);
+    res = tuple_mul(&c, 2);
+    exp = color(0.4, 0.6, 0.8);
+    TEST_ASSERT_TRUE(tuple_equal(&exp, &res));
+
+    c1 = color(1, 0.2, 0.4);
+    c2 = color(0.9, 1, 0.1);
+    res = tuple_blend(&c1, &c2);
+    exp = color(0.9, 0.2, 0.04);
+    TEST_ASSERT_TRUE(tuple_equal(&exp, &res));
 }
 
 int main(void)

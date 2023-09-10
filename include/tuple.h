@@ -53,6 +53,11 @@ Tuple tuple_neg(const Tuple *t);
 Tuple tuple_mul(const Tuple *t, float v);
 
 /**
+ * \brief Multiple a tuple with a tuple
+ */
+Tuple tuple_blend(const Tuple *a, const Tuple *b);
+
+/**
  * \brief Divide a tuple with a scalar
  */
 Tuple tuple_div(const Tuple *t, float v);

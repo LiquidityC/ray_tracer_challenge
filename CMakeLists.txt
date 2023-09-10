@@ -8,6 +8,7 @@ add_executable(tracer
 	src/main.c
 	src/tuple.c
 	src/float.c
+	src/canvas.c
 	)
 target_include_directories(tracer PRIVATE include)
 target_link_libraries(tracer PRIVATE m)
@@ -22,7 +23,14 @@ function(generate_test)
 	add_test(NAME ${GENERATE_TEST_LABEL} COMMAND ${GENERATE_TEST_LABEL})
 endfunction()
 
-generate_test(
-	LABEL test_tuple
-	SOURCES test/test_tuple.c src/tuple.c src/float.c
-	)
+file(GLOB SOURCE_FILES CONFIGURE_DEPENDS src/*.c)
+list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c)
+file(GLOB TEST_SOURCE_FILES CONFIGURE_DEPENDS test/*.c)
+
+foreach(F IN LISTS TEST_SOURCE_FILES)
+	get_filename_component(TEST_NAME ${F} NAME_WE)
+	generate_test(
+		LABEL ${TEST_NAME}
+		SOURCES ${F} ${SOURCE_FILES}
+		)
+endforeach()

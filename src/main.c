@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <string.h>
 #include "tuple.h"
+#include "canvas.h"
 
 typedef struct Projectile {
     Point pos;
@@ -21,12 +23,32 @@ static void tick(Environment *env, Projectile *p)
 
 int main(int argc, char **argv)
 {
-    Projectile p = { point(0, 1, 0), tuple_normalize(&vector(1, 1, 0)) };
+    static const Color FG = color(1, 1, 1);
+    static const Color BG = color(0.2, 0.2, 0.2);
+
+    Point start = point(0, 1, 0);
+    Vector velocity = tuple_normalize(&vector(1, 1.8, 0));
+    velocity = tuple_mul(&velocity, 11.25);
+
+    Projectile p = { start, velocity };
     Environment env = { vector(0, -0.1, 0), vector(-0.01, 0, 0) };
+
+    Canvas c = canvas(900, 550);
+
+    /* Set the background */
+    for (size_t i = 0; i < c.width; ++i) {
+        for (size_t j = 0; j < c.height; ++j) {
+            canvas_write_pixel(&c, i, j, &BG);
+        }
+    }
 
     while (p.pos.y >= 0) {
         tick(&env, &p);
-        printf("%.2f %.2f\n", p.pos.x, p.pos.y);
+        canvas_write_pixel(&c, p.pos.x, c.height - p.pos.y, &FG);
     }
+
+    canvas_write_ppm(&c, "trajectory.ppm");
+
+    canvas_destroy(&c);
     return 0;
 }

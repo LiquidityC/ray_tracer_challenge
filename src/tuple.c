@@ -46,6 +46,11 @@ Tuple tuple_div(const Tuple *t, float v)
     return tuple(t->x / v, t->y / v, t->z / v, t->w / v);
 }
 
+Tuple tuple_blend(const Tuple *a, const Tuple *b)
+{
+    return color(a->x * b->x, a->y * b->y, a->z * b->z);
+}
+
 float tuple_magnitude(const Tuple *t)
 {
     return sqrt(pow(t->x, 2) + pow(t->y, 2) + pow(t->z, 2) + pow(t->w, 2));
