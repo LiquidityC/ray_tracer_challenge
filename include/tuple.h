@@ -3,9 +3,14 @@
 
 #include <stdbool.h>
 
-typedef struct Tuple
+typedef union Tuple
 {
-    float x, y, z, w;
+    struct {
+        float x, y, z, w;
+    };
+    struct {
+        float r, g, b, a;
+    };
 } Tuple;
 
 typedef Tuple Vector;
@@ -55,7 +60,7 @@ Tuple tuple_mul(const Tuple *t, float v);
 /**
  * \brief Multiple a tuple with a tuple
  */
-Tuple tuple_blend(const Tuple *a, const Tuple *b);
+Tuple tuple_prod(const Tuple *a, const Tuple *b);
 
 /**
  * \brief Divide a tuple with a scalar

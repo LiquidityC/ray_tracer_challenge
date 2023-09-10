@@ -135,9 +135,9 @@ static void test_crossproduct(void)
 static void test_color(void)
 {
     Color c = color(-0.5, 0.4, 1.7);
-    TEST_ASSERT_EQUAL_FLOAT(-0.5, c.x);
-    TEST_ASSERT_EQUAL_FLOAT(0.4, c.y);
-    TEST_ASSERT_EQUAL_FLOAT(1.7, c.z);
+    TEST_ASSERT_EQUAL_FLOAT(-0.5, c.r);
+    TEST_ASSERT_EQUAL_FLOAT(0.4, c.g);
+    TEST_ASSERT_EQUAL_FLOAT(1.7, c.b);
 }
 
 static void test_color_arithmetic(void)
@@ -159,7 +159,7 @@ static void test_color_arithmetic(void)
 
     c1 = color(1, 0.2, 0.4);
     c2 = color(0.9, 1, 0.1);
-    res = tuple_blend(&c1, &c2);
+    res = tuple_prod(&c1, &c2);
     exp = color(0.9, 0.2, 0.04);
     TEST_ASSERT_TRUE(tuple_equal(&exp, &res));
 }
