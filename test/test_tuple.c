@@ -10,7 +10,7 @@ void tearDown(void)
 {
 }
 
-void test_tuple_is_point(void)
+static void test_tuple_is_point(void)
 {
     Tuple t = { 4.3, -4.2, 3.1, 1.0 };
     TEST_ASSERT_EQUAL_FLOAT(4.3, t.x);
@@ -19,7 +19,7 @@ void test_tuple_is_point(void)
     TEST_ASSERT_EQUAL_FLOAT(1.0, t.w);
 }
 
-void test_tuple_is_vector(void)
+static void test_tuple_is_vector(void)
 {
     Tuple t = { 4.3, -4.2, 3.1, 0.0 };
     TEST_ASSERT_EQUAL_FLOAT(4.3, t.x);
@@ -28,7 +28,7 @@ void test_tuple_is_vector(void)
     TEST_ASSERT_EQUAL_FLOAT(0.0, t.w);
 }
 
-void test_factory_functions(void)
+static void test_factory_functions(void)
 {
     Tuple p = point(4, -4, 3);
     TEST_ASSERT_TRUE(tuple_equal(&p, &tuple(4, -4, 3, 1)));
@@ -37,7 +37,7 @@ void test_factory_functions(void)
     TEST_ASSERT_TRUE(tuple_equal(&v, &tuple(4, -4, 3, 0)));
 }
 
-void test_addition(void)
+static void test_addition(void)
 {
     Tuple a = tuple(3, -2, 5, 1);
     Tuple b = tuple(-2, 3, 1, 0);
@@ -45,7 +45,7 @@ void test_addition(void)
     TEST_ASSERT_TRUE(tuple_equal(&r, &tuple(1, 1, 6, 1)));
 }
 
-void test_subtraction(void)
+static void test_subtraction(void)
 {
     Tuple a = point(3, 2, 1);
     Tuple b = point(5, 6, 7);
@@ -68,28 +68,28 @@ void test_subtraction(void)
     TEST_ASSERT_TRUE(tuple_equal(&r, &vector(-1, 2, -3)));
 }
 
-void test_negate(void)
+static void test_negate(void)
 {
     Tuple t = tuple(1, -2, 3, -4);
     Tuple n = tuple_neg(&t);
     TEST_ASSERT_TRUE(tuple_equal(&n, &tuple(-1, 2, -3, 4)));
 }
 
-void test_multiply(void)
+static void test_multiply(void)
 {
     Tuple t = tuple(1, -2, 3, -4);
     Tuple r = tuple_mul(&t, 0.5);
     TEST_ASSERT_TRUE(tuple_equal(&r, &tuple(0.5, -1, 1.5, -2)));
 }
 
-void test_divide(void)
+static void test_divide(void)
 {
     Tuple t = tuple(1, -2, 3, -4);
     Tuple r = tuple_div(&t, 2);
     TEST_ASSERT_TRUE(tuple_equal(&r, &tuple(0.5, -1, 1.5, -2)));
 }
 
-void test_magnitude(void)
+static void test_magnitude(void)
 {
     Vector v = vector(0, 1, 0);
     TEST_ASSERT_EQUAL_FLOAT(1, tuple_magnitude(&v));
@@ -104,7 +104,7 @@ void test_magnitude(void)
     TEST_ASSERT_EQUAL_FLOAT((float) sqrt(14), tuple_magnitude(&v));
 }
 
-void test_normalize(void)
+static void test_normalize(void)
 {
     Vector v = tuple_normalize(&vector(4, 0, 0));
     TEST_ASSERT_TRUE(tuple_equal(&vector(1, 0, 0), &v));
@@ -115,14 +115,14 @@ void test_normalize(void)
     TEST_ASSERT_EQUAL_FLOAT(1, tuple_magnitude(&v));
 }
 
-void test_dotproduct(void)
+static void test_dotproduct(void)
 {
     Vector a = vector(1, 2, 3);
     Vector b = vector(2, 3, 4);
     TEST_ASSERT_EQUAL_FLOAT(20, tuple_dot(&a, &b));
 }
 
-void test_crossproduct(void)
+static void test_crossproduct(void)
 {
     Vector a = vector(1, 2, 3);
     Vector b = vector(2, 3, 4);
@@ -130,6 +130,23 @@ void test_crossproduct(void)
     Vector cross_b_a = tuple_cross(&b, &a);
     TEST_ASSERT_TRUE(tuple_equal(&cross_a_b, &vector(-1, 2, -1)));
     TEST_ASSERT_TRUE(tuple_equal(&cross_b_a, &vector(1, -2, 1)));
+}
+
+static void test_color(void)
+{
+    Color c = color(-0.5, 0.4, 1.7);
+    TEST_ASSERT_EQUAL_FLOAT(-0.5, c.x);
+    TEST_ASSERT_EQUAL_FLOAT(0.4, c.y);
+    TEST_ASSERT_EQUAL_FLOAT(1.7, c.z);
+}
+
+static void test_color_arithmetic(void)
+{
+    Color c1 = color(0.9, 0.6, 0.75);
+    Color c2 = color(0.7, 0.1, 0.25);
+    Color res = tuple_add(&c1, &c2);
+    Color exp = color(1.6, 0.7, 1.0);
+    TEST_ASSERT_TRUE(tuple_equal(&exp, &res));
 }
 
 int main(void)
@@ -146,5 +163,7 @@ int main(void)
     RUN_TEST(test_magnitude);
     RUN_TEST(test_normalize);
     RUN_TEST(test_crossproduct);
+    RUN_TEST(test_color);
+    RUN_TEST(test_color_arithmetic);
     return UNITY_END();
 }

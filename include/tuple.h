@@ -10,10 +10,12 @@ typedef struct Tuple
 
 typedef Tuple Vector;
 typedef Tuple Point;
+typedef Tuple Color;
 
 #define tuple(x, y, z, w) ((Tuple) { x, y, z, w })
 #define point(x, y, z) ((Tuple) { x, y, z, 1.0 })
 #define vector(x, y, z) ((Tuple) { x, y, z, 0.0 })
+#define color(r, g, b) ((Tuple) { r, g, b, 0.0 })
 
 /**
  * \brief Checks if a tuple is a point
