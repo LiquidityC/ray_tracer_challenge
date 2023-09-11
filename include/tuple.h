@@ -38,6 +38,8 @@ typedef Tuple Color;
 #define vector(x, y, z) ((Tuple) { x, y, z, 0.0 })
 #define color(r, g, b) ((Tuple) { r, g, b, 0.0 })
 
+#define ORIGIN vector(0, 0, 0)
+
 /**
  * \brief Checks if a tuple is a point
  */
@@ -52,7 +54,7 @@ bool tuple_is_vector(const Tuple *t);
  * \brief Compare two tuples
  */
 bool tuple_equal(const Tuple *a, const Tuple *b);
-#define vec4_equal tuple_equal;
+#define vec4_equal tuple_equal
 
 /**
  * \brief Compare two Vec3
