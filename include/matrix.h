@@ -20,10 +20,54 @@ typedef union Mat4 {
     Tuple rows[4];
 } Mat4;
 
+typedef Mat4 Transform;
+
 #define IDENTITY ((Mat4) {{ \
         { 1, 0, 0, 0 }, \
         { 0, 1, 0, 0 }, \
         { 0, 0, 1, 0 }, \
+        { 0, 0, 0, 1 }, \
+        }})
+
+#define translation(x, y, z) ((Mat4) {{ \
+        { 1, 0, 0, x }, \
+        { 0, 1, 0, y }, \
+        { 0, 0, 1, z }, \
+        { 0, 0, 0, 1 }, \
+        }})
+
+#define scaling(x, y, z) ((Mat4) {{ \
+        { x, 0, 0, 0 }, \
+        { 0, y, 0, 0 }, \
+        { 0, 0, z, 0 }, \
+        { 0, 0, 0, 1 }, \
+        }})
+
+#define rotation_x(r) ((Mat4) {{ \
+        { 1, 0, 0, 0 }, \
+        { 0, cos(r), -sin(r), 0 }, \
+        { 0, sin(r), cos(r), 0 }, \
+        { 0, 0, 0, 1 }, \
+        }})
+
+#define rotation_y(r) ((Mat4) {{ \
+        { cos(r), 0, sin(r), 0 }, \
+        { 0, 1, 0, 0 }, \
+        { -sin(r), 0, cos(r), 0 }, \
+        { 0, 0, 0, 1 }, \
+        }})
+
+#define rotation_z(r) ((Mat4) {{ \
+        { cos(r), -sin(r), 0, 0 }, \
+        { sin(r), cos(r), 0, 0 }, \
+        { 0, 0, 1, 0 }, \
+        { 0, 0, 0, 1 }, \
+        }})
+
+#define shearing(xy, xz, yx, yz, zx, zy) ((Mat4) {{ \
+        { 1, xy, xz, 0 }, \
+        { yx, 1, yz, 0 }, \
+        { zx, zy, 1, 0 }, \
         { 0, 0, 0, 1 }, \
         }})
 
