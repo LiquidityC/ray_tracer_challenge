@@ -2,6 +2,7 @@
 #define _MATRIX_H_
 
 #include <stdbool.h>
+#include <math.h>
 #include "common.h"
 #include "tuple.h"
 

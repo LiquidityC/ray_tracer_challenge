@@ -1,5 +1,6 @@
 #include "unity.h"
 #include "matrix.h"
+#include "transformation_chain.h"
 
 void setUp(void)
 {
@@ -158,6 +159,39 @@ static void test_shearing(void)
     TEST_ASSERT_TRUE(tuple_equal(&exp_zy, &res_zy));
 }
 
+static void test_individual_transformations(void)
+{
+    Point p= point(1, 0, 1);
+    Transform rot = rotation_x(M_PI/2);
+    Transform scale = scaling(5, 5, 5);
+    Transform translate = translation(10, 5, 7);
+
+    Point p2 = mat4_vector_mul(&rot, &p);
+    Point exp = point(1, -1, 0);
+    TEST_ASSERT_TRUE(tuple_equal(&exp, &p2));
+
+    Point p3 = mat4_vector_mul(&scale, &p2);
+    exp = point(5, -5, 0);
+    TEST_ASSERT_TRUE(tuple_equal(&exp, &p3));
+
+    Point p4 = mat4_vector_mul(&translate, &p3);
+    exp = point(15, 0, 7);
+    TEST_ASSERT_TRUE(tuple_equal(&exp, &p4));
+}
+
+static void test_chain_transformations(void)
+{
+    chain_begin_vec4(point(1, 0, 1));
+    {
+        rot_x(M_PI/2);
+        scal(5, 5, 5);
+        trans(10, 5, 7);
+    }
+    Point p = chain_end_vec4();
+    Point exp = point(15, 0, 7);
+    TEST_ASSERT_TRUE(tuple_equal(&exp, &p));
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -173,5 +207,7 @@ int main(void)
     RUN_TEST(test_y_rotation);
     RUN_TEST(test_z_rotation);
     RUN_TEST(test_shearing);
+    RUN_TEST(test_individual_transformations);
+    RUN_TEST(test_chain_transformations);
     return UNITY_END();
 }
