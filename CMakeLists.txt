@@ -4,12 +4,8 @@ project(ray-tracer-challenge VERSION 0.1.0)
 
 add_subdirectory(unity)
 
-add_executable(tracer
-	src/main.c
-	src/tuple.c
-	src/float.c
-	src/canvas.c
-	)
+file(GLOB SOURCE_FILES CONFIGURE_DEPENDS src/*.c)
+add_executable(tracer ${SOURCE_FILES})
 target_include_directories(tracer PRIVATE include)
 target_link_libraries(tracer PRIVATE m)
 
@@ -23,7 +19,6 @@ function(generate_test)
 	add_test(NAME ${GENERATE_TEST_LABEL} COMMAND ${GENERATE_TEST_LABEL})
 endfunction()
 
-file(GLOB SOURCE_FILES CONFIGURE_DEPENDS src/*.c)
 list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c)
 file(GLOB TEST_SOURCE_FILES CONFIGURE_DEPENDS test/*.c)
 

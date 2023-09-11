@@ -5,19 +5,19 @@
 
 typedef struct Projectile {
     Point pos;
-    Vector vel;
+    Vec4 vel;
 } Projectile;
 
 typedef struct Environment {
-    Vector gravity;
-    Vector wind;
+    Vec4 gravity;
+    Vec4 wind;
 } Environment;
 
 static void tick(Environment *env, Projectile *p)
 {
     p->pos = tuple_add(&p->pos, &p->vel);
 
-    Vector env_factor = tuple_add(&env->gravity, &env->wind);
+    Vec4 env_factor = tuple_add(&env->gravity, &env->wind);
     p->vel = tuple_add(&p->vel, &env_factor);
 }
 
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     static const Color BG = color(0.2, 0.2, 0.2);
 
     Point start = point(0, 1, 0);
-    Vector velocity = tuple_normalize(&vector(1, 1.8, 0));
+    Vec4 velocity = tuple_normalize(&vector(1, 1.8, 0));
     velocity = tuple_mul(&velocity, 11.25);
 
     Projectile p = { start, velocity };

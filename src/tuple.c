@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <math.h>
+#include <stddef.h>
 #include "tuple.h"
 #include "float.h"
 
@@ -13,12 +14,29 @@ bool tuple_is_vector(const Tuple *t)
     return t->w == 0.0;
 }
 
+static bool vector_equal(const f32 *a, const f32 *b, size_t len)
+{
+    for (size_t i = 0; i < len; ++i) {
+        if (!fequal(*(a + i), *(b + i))) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool tuple_equal(const Tuple *a, const Tuple *b)
 {
-    return fequal(a->x, b->x)
-        && fequal(a->y, b->y)
-        && fequal(a->z, b->z)
-        && fequal(a->w, b->w);
+    return vector_equal(&a->elem[0], &b->elem[0], 4);
+}
+
+bool vec3_equal(const Vec3 *a, const Vec3 *b)
+{
+    return vector_equal(&a->elem[0], &b->elem[0], 3);
+}
+
+bool vec2_equal(const Vec2 *a, const Vec2 *b)
+{
+    return vector_equal(&a->elem[0], &b->elem[0], 2);
 }
 
 Tuple tuple_add(const Tuple *a, const Tuple *b)

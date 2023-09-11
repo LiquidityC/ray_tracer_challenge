@@ -91,7 +91,7 @@ static void test_divide(void)
 
 static void test_magnitude(void)
 {
-    Vector v = vector(0, 1, 0);
+    Vec4 v = vector(0, 1, 0);
     TEST_ASSERT_EQUAL_FLOAT(1, tuple_magnitude(&v));
 
     v = vector(0, 0, 1);
@@ -106,7 +106,7 @@ static void test_magnitude(void)
 
 static void test_normalize(void)
 {
-    Vector v = tuple_normalize(&vector(4, 0, 0));
+    Vec4 v = tuple_normalize(&vector(4, 0, 0));
     TEST_ASSERT_TRUE(tuple_equal(&vector(1, 0, 0), &v));
 
     v = tuple_normalize(&vector(1, 2, 3));
@@ -117,17 +117,17 @@ static void test_normalize(void)
 
 static void test_dotproduct(void)
 {
-    Vector a = vector(1, 2, 3);
-    Vector b = vector(2, 3, 4);
+    Vec4 a = vector(1, 2, 3);
+    Vec4 b = vector(2, 3, 4);
     TEST_ASSERT_EQUAL_FLOAT(20, tuple_dot(&a, &b));
 }
 
 static void test_crossproduct(void)
 {
-    Vector a = vector(1, 2, 3);
-    Vector b = vector(2, 3, 4);
-    Vector cross_a_b = tuple_cross(&a, &b);
-    Vector cross_b_a = tuple_cross(&b, &a);
+    Vec4 a = vector(1, 2, 3);
+    Vec4 b = vector(2, 3, 4);
+    Vec4 cross_a_b = tuple_cross(&a, &b);
+    Vec4 cross_b_a = tuple_cross(&b, &a);
     TEST_ASSERT_TRUE(tuple_equal(&cross_a_b, &vector(-1, 2, -1)));
     TEST_ASSERT_TRUE(tuple_equal(&cross_b_a, &vector(1, -2, 1)));
 }

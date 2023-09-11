@@ -2,6 +2,7 @@
 #define _TUPLE_H_
 
 #include <stdbool.h>
+#include "common.h"
 
 typedef union Tuple
 {
@@ -11,9 +12,24 @@ typedef union Tuple
     struct {
         float r, g, b, a;
     };
+    float elem[4];
 } Tuple;
 
-typedef Tuple Vector;
+typedef union Vec3 {
+    f32 elem[3];
+    struct {
+        f32 x, y, z;
+    };
+} Vec3;
+
+typedef union Vec2 {
+    f32 elem[2];
+    struct {
+        f32 x, y;
+    };
+} Vec2;
+
+typedef Tuple Vec4;
 typedef Tuple Point;
 typedef Tuple Color;
 
@@ -36,6 +52,17 @@ bool tuple_is_vector(const Tuple *t);
  * \brief Compare two tuples
  */
 bool tuple_equal(const Tuple *a, const Tuple *b);
+#define vec4_equal tuple_equal;
+
+/**
+ * \brief Compare two Vec3
+ */
+bool vec3_equal(const Vec3 *a, const Vec3 *b);
+
+/**
+ * \brief Compare two Vec2
+ */
+bool vec2_equal(const Vec2 *a, const Vec2 *b);
 
 /**
  * \brief Add two tuples
