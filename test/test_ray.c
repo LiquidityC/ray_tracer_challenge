@@ -1,6 +1,7 @@
 #include "unity.h"
 #include "ray.h"
 #include "sphere.h"
+#include "intersection.h"
 
 void setUp(void)
 {
@@ -45,53 +46,124 @@ static void test_ray_sphere_intersection(void)
 {
     Ray r = ray(point(0, 0, -5), vector(0, 0, 1));
     Sphere s = sphere();
-    f32 xs[2];
-    size_t count = sphere_intersect(&s, &r, xs);
-    TEST_ASSERT_EQUAL_size_t(2, count);
-    TEST_ASSERT_EQUAL_FLOAT(4, xs[0]);
-    TEST_ASSERT_EQUAL_FLOAT(6, xs[1]);
+    Intersects xs = sphere_intersect(&s, &r);
+    TEST_ASSERT_EQUAL_size_t(2, xs.len);
+    TEST_ASSERT_EQUAL_FLOAT(4, xs.xs[0].t);
+    TEST_ASSERT_EQUAL_FLOAT(6, xs.xs[1].t);
+    intersects_destroy(&xs);
 }
 
 static void test_ray_sphere_glance(void)
 {
     Ray r = ray(point(0, 1, -5), vector(0, 0, 1));
     Sphere s = sphere();
-    f32 xs[2];
-    size_t count = sphere_intersect(&s, &r, xs);
-    TEST_ASSERT_EQUAL_size_t(2, count);
-    TEST_ASSERT_EQUAL_FLOAT(5, xs[0]);
-    TEST_ASSERT_EQUAL_FLOAT(5, xs[1]);
+    Intersects xs = sphere_intersect(&s, &r);
+    TEST_ASSERT_EQUAL_size_t(2, xs.len);
+    TEST_ASSERT_EQUAL_FLOAT(5, xs.xs[0].t);
+    TEST_ASSERT_EQUAL_FLOAT(5, xs.xs[1].t);
+    intersects_destroy(&xs);
 }
 
 static void test_ray_sphere_miss(void)
 {
     Ray r = ray(point(0, 2, -5), vector(0, 0, 1));
     Sphere s = sphere();
-    f32 xs[2];
-    size_t count = sphere_intersect(&s, &r, xs);
-    TEST_ASSERT_EQUAL_size_t(0, count);
+    Intersects xs = sphere_intersect(&s, &r);
+    TEST_ASSERT_EQUAL_size_t(0, xs.len);
+    intersects_destroy(&xs);
 }
 
 static void test_ray_sphere_inside(void)
 {
     Ray r = ray(point(0, 0, 0), vector(0, 0, 1));
     Sphere s = sphere();
-    f32 xs[2];
-    size_t count = sphere_intersect(&s, &r, xs);
-    TEST_ASSERT_EQUAL_size_t(2, count);
-    TEST_ASSERT_EQUAL_FLOAT(-1, xs[0]);
-    TEST_ASSERT_EQUAL_FLOAT(1, xs[1]);
+    Intersects xs = sphere_intersect(&s, &r);
+    TEST_ASSERT_EQUAL_size_t(2, xs.len);
+    TEST_ASSERT_EQUAL_FLOAT(-1, xs.xs[0].t);
+    TEST_ASSERT_EQUAL_FLOAT(1, xs.xs[1].t);
+    intersects_destroy(&xs);
 }
 
 static void test_ray_sphere_behind(void)
 {
     Ray r = ray(point(0, 0, 5), vector(0, 0, 1));
     Sphere s = sphere();
-    f32 xs[2];
-    size_t count = sphere_intersect(&s, &r, xs);
-    TEST_ASSERT_EQUAL_size_t(2, count);
-    TEST_ASSERT_EQUAL_FLOAT(-6, xs[0]);
-    TEST_ASSERT_EQUAL_FLOAT(-4, xs[1]);
+    Intersects xs = sphere_intersect(&s, &r);
+    TEST_ASSERT_EQUAL_size_t(2, xs.len);
+    TEST_ASSERT_EQUAL_FLOAT(-6, xs.xs[0].t);
+    TEST_ASSERT_EQUAL_FLOAT(-4, xs.xs[1].t);
+    intersects_destroy(&xs);
+}
+
+static void test_aggregating_intersections(void)
+{
+    Sphere s = sphere();
+    Intersect i1 = intersect(1, s);
+    Intersect i2 = intersect(2, s);
+    Intersects xs = intersects(2, i1, i2);
+    TEST_ASSERT_EQUAL_size_t(2, xs.len);
+    TEST_ASSERT_EQUAL_FLOAT(s, xs.xs[0].object);
+    TEST_ASSERT_EQUAL_FLOAT(s, xs.xs[1].object);
+    intersects_destroy(&xs);
+}
+
+static void test_intersection_has_object(void)
+{
+    Ray r = ray(point(0, 0, -5), vector(0, 0, 1));
+    Sphere s = sphere();
+    Intersects xs = sphere_intersect(&s, &r);
+    TEST_ASSERT_EQUAL_size_t(2, xs.len);
+    TEST_ASSERT_EQUAL_FLOAT(s, xs.xs[0].object);
+    TEST_ASSERT_EQUAL_FLOAT(s, xs.xs[1].object);
+    intersects_destroy(&xs);
+}
+
+static void test_hit_with_all_positives(void)
+{
+    Sphere s = sphere();
+    Intersect i1 = intersect(1, s);
+    Intersect i2 = intersect(2, s);
+    Intersects xs = intersects(2, i1, i2);
+    Intersect *hit = intersect_hit(&xs);
+    TEST_ASSERT_TRUE(intersect_equal(&i1, hit));
+    intersects_destroy(&xs);
+}
+
+static void test_hit_when_some_negative(void)
+{
+    Sphere s = sphere();
+    Intersect i1 = intersect(-1, s);
+    Intersect i2 = intersect(1, s);
+    Intersects xs = intersects(2, i1, i2);
+    Intersect *hit = intersect_hit(&xs);
+    TEST_ASSERT_TRUE(intersect_equal(&i2, hit));
+    intersects_destroy(&xs);
+}
+
+static void test_hit_when_all_negative(void)
+{
+    Sphere s = sphere();
+    Intersect i1 = intersect(-2, s);
+    Intersect i2 = intersect(-1, s);
+    Intersects xs = intersects(2, i1, i2);
+    Intersect *hit = intersect_hit(&xs);
+    TEST_ASSERT_EQUAL_PTR(NULL, hit);
+    intersects_destroy(&xs);
+}
+
+static void test_hit_unordered_intersects(void)
+{
+    Sphere s = sphere();
+    Intersect i1 = intersect(5, s);
+    Intersect i2 = intersect(7, s);
+    Intersect i3 = intersect(-3, s);
+    Intersect i4 = intersect(2, s);
+    Intersects xs = intersects(4, i1, i2, i3, i4);
+    Intersect *hit = intersect_hit(&xs);
+    TEST_ASSERT_EQUAL_FLOAT(2, hit->t);
+    TEST_ASSERT_TRUE(intersect_equal(&i4, hit));
+    intersects_destroy(&xs);
+    TEST_ASSERT_EQUAL_PTR(NULL, xs.xs);
 }
 
 int main(void)
@@ -104,5 +176,11 @@ int main(void)
     RUN_TEST(test_ray_sphere_miss);
     RUN_TEST(test_ray_sphere_inside);
     RUN_TEST(test_ray_sphere_behind);
+    RUN_TEST(test_aggregating_intersections);
+    RUN_TEST(test_intersection_has_object);
+    RUN_TEST(test_hit_with_all_positives);
+    RUN_TEST(test_hit_when_some_negative);
+    RUN_TEST(test_hit_when_all_negative);
+    RUN_TEST(test_hit_unordered_intersects);
     return UNITY_END();
 }
