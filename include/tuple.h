@@ -38,7 +38,7 @@ typedef Tuple Color;
 #define vector(x, y, z) ((Tuple) { x, y, z, 0.0 })
 #define color(r, g, b) ((Tuple) { r, g, b, 0.0 })
 
-#define ORIGIN vector(0, 0, 0)
+#define ORIGIN point(0, 0, 0)
 
 /**
  * \brief Checks if a tuple is a point
