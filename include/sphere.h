@@ -12,5 +12,7 @@ typedef struct Sphere {
 
 Sphere sphere(void);
 
+Vec4 sphere_normal_at(const Sphere *s, const Point *p);
+
 #endif // _SPHERE_H_
 
