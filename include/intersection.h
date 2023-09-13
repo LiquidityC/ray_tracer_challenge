@@ -5,6 +5,8 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include "common.h"
+#include "sphere.h"
+#include "ray.h"
 
 typedef struct Intersect {
     f32 t;
@@ -13,10 +15,14 @@ typedef struct Intersect {
 
 #define intersect(t, o) ((Intersect) { t, o })
 
+typedef struct IntersectsNode {
+    Intersect x;
+    struct IntersectsNode *next;
+} Xsn;
+
 typedef struct Intersects {
     size_t len;
-    size_t size;
-    Intersect *xs;
+    Xsn *head;
 } Intersects;
 
 void intersects_init(Intersects *xs);
@@ -29,11 +35,19 @@ void intersects_add(Intersects *xs, f32 t, f32 object);
 
 void intersects_push(Intersects *xs, Intersect x);
 
-void intersects_destroy(Intersects *xs);
+Intersect* intersects_get(const Intersects *xs, size_t index);
 
 Intersect* intersect_hit(const Intersects *xs);
 
 bool intersect_equal(const Intersect *a, const Intersect *b);
+
+void intersects_destroy(Intersects *xs);
+
+/**
+ * \brief Find intersections between a ray and a sphere's 'hull'
+ */
+Intersects intersect_sphere(Sphere *s, Ray *r);
+
 
 #endif // _INTERSECTION_H_
 

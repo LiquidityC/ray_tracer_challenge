@@ -3,17 +3,14 @@
 
 #include <stddef.h>
 #include "common.h"
-#include "ray.h"
-#include "intersection.h"
+#include "matrix.h"
 
-typedef u32 Sphere;
+typedef struct Sphere {
+    u32 id;
+    Mat4 transform;
+} Sphere;
 
 Sphere sphere(void);
-
-/**
- * \brief Find intersections between a ray and a sphere's 'hull'
- */
-Intersects sphere_intersect(Sphere *s, Ray *r);
 
 #endif // _SPHERE_H_
 

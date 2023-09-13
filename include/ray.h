@@ -19,5 +19,10 @@ typedef struct Ray {
  */
 Point ray_position(Ray *r, f32 t);
 
+/**
+ * \brief Transform a ray
+ */
+Ray ray_transform(const Ray *r, const Mat4 *transform);
+
 #endif // _RAY_H_
 

@@ -2,49 +2,40 @@
 #include <stdlib.h>
 #include "intersection.h"
 
-static int intersects_extend(Intersects *xs)
-{
-    Intersect *new_inters = realloc(xs->xs, 2 * xs->size * sizeof(Intersect));
-    if (!new_inters) {
-        return -1;
-    }
-    xs->xs = new_inters;
-    xs->size *= 2;
-    return 0;
-}
-
 void intersects_init(Intersects *xs)
 {
     xs->len = 0;
-    xs->size = 1;
-    xs->xs = malloc(sizeof(Intersect));
+    xs->head = NULL;
 }
 
 void intersects_add(Intersects *xs, f32 t, f32 object)
 {
-    if (xs->size - 1 == xs->len) {
-        if (intersects_extend(xs) != 0) {
-            perror("intersects_extend");
-            return;
-        }
-    }
-    xs->xs[xs->len++] = (Intersect) { t, object };
+    Intersect i = { t, object };
+    intersects_push(xs, i);
 }
 
 void intersects_push(Intersects *xs, Intersect x)
 {
-    if (xs->size - 1 == xs->len) {
-        if (intersects_extend(xs) != 0) {
-            perror("intersects_extend");
-            return;
+    xs->len++;
+
+    Xsn *next = malloc(sizeof(Xsn));
+    next->x = x;
+
+    if (!xs->head || xs->head->x.t > x.t) {
+        next->next = xs->head;
+        xs->head = next;
+    } else {
+        Xsn *ptr = xs->head;
+        while (ptr->next != NULL && ptr->next->x.t < x.t ) {
+            ptr = ptr->next;
         }
+        next->next = ptr->next;
+        ptr->next = next;
     }
-    xs->xs[xs->len++] = x;
 }
 
 Intersects intersects(int n, ...)
 {
-    // TODO: This needs to sort on insert
     Intersects xs;
     intersects_init(&xs);
 
@@ -58,26 +49,36 @@ Intersects intersects(int n, ...)
     return xs;
 }
 
+Intersect* intersects_get(const Intersects *xs, size_t index)
+{
+    size_t i = 0;
+    Xsn *ptr = xs->head;
+    while (ptr != NULL) {
+        if (i == index) {
+            return &ptr->x;
+        }
+        ptr = ptr->next;
+        ++i;
+    }
+    return NULL;
+}
+
 Intersect* intersect_hit(const Intersects *xs)
 {
     if (xs->len == 0) {
         return NULL;
     }
 
-    Intersect *hit = xs->xs;
-    for (size_t i = 1; i < xs->len; ++i) {
-        f32 t = xs->xs[i].t;
-        if (hit->t < 0) {
-            hit = xs->xs + i;
-        }
-        if (t > 0 && t < hit->t) {
-            hit = xs->xs + i;
-        }
+
+    Xsn *ptr = xs->head;
+    while (ptr != NULL && ptr->x.t < 0) 
+        ptr = ptr->next;
+
+    if (ptr != NULL) {
+        return &ptr->x;
+    } else {
+        return NULL;
     }
-    if (hit->t < 0) {
-        hit = NULL;
-    }
-    return hit;
 }
 
 bool intersect_equal(const Intersect *a, const Intersect *b)
@@ -87,8 +88,47 @@ bool intersect_equal(const Intersect *a, const Intersect *b)
 
 void intersects_destroy(Intersects *xs)
 {
-    if (xs->xs != NULL) {
-        free(xs->xs);
+    Xsn *ptr = xs->head;
+    Xsn *next;
+    while (ptr != NULL) {
+        next = ptr->next;
+        printf("%.1f %.1f\n", ptr->x.t, ptr->x.object);
+        free(ptr);
+        ptr = next;
     }
-    xs->xs = NULL;
+    xs->head = NULL;
+}
+
+Intersects intersect_sphere(Sphere *s, Ray *r)
+{
+    Transform inverse = mat4_invert(&s->transform);
+    Ray tr = ray_transform(r, &inverse);
+    size_t result = 0;
+
+    Intersects inters;
+    intersects_init(&inters);
+
+    /* Ray from sphere center to ray origin */
+    Vec4 origin = ORIGIN;
+    Vec4 s_to_r = tuple_sub(&tr.origin, &origin);
+
+    /* Calculate discriminant */
+    f32 a = tuple_dot(&tr.direction, &tr.direction);
+    f32 b = 2.0 * tuple_dot(&tr.direction, &s_to_r);
+    f32 c = tuple_dot(&s_to_r, &s_to_r) - 1.0;
+
+    f32 discriminant = pow(b, 2) - 4.0 * a * c;
+
+    if (discriminant < 0) {
+        goto out;
+    }
+
+    f32 t1 = (-b - sqrt(discriminant)) / (2.0 * a);
+    f32 t2 = (-b + sqrt(discriminant)) / (2.0 * a);
+
+    intersects_add(&inters, min(t1, t2), s->id);
+    intersects_add(&inters, max(t1, t2), s->id);
+
+out:
+    return inters;
 }
