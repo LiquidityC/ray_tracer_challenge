@@ -92,7 +92,6 @@ void intersects_destroy(Intersects *xs)
     Xsn *next;
     while (ptr != NULL) {
         next = ptr->next;
-        printf("%.1f %.1f\n", ptr->x.t, ptr->x.object);
         free(ptr);
         ptr = next;
     }
