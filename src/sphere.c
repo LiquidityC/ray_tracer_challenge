@@ -8,6 +8,7 @@ Sphere sphere(void)
     Sphere s = {
         .id = ++_sphere_id,
         .transform = IDENTITY,
+        .material = material(),
     };
     return s;
 }

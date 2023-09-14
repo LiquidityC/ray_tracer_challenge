@@ -14,12 +14,12 @@ void tearDown(void)
 static void test_aggregating_intersections(void)
 {
     Sphere s = sphere();
-    Intersect i1 = intersect(1, s.id);
-    Intersect i2 = intersect(2, s.id);
+    Intersect i1 = intersect(1, &s);
+    Intersect i2 = intersect(2, &s);
     Intersects xs = intersects(2, i1, i2);
     TEST_ASSERT_EQUAL_size_t(2, xs.len);
-    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 0)->object);
-    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 1)->object);
+    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 0)->object->id);
+    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 1)->object->id);
     intersects_destroy(&xs);
 }
 
@@ -29,16 +29,16 @@ static void test_intersection_has_object(void)
     Sphere s = sphere();
     Intersects xs = intersect_sphere(&s, &r);
     TEST_ASSERT_EQUAL_size_t(2, xs.len);
-    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 0)->object);
-    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 1)->object);
+    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 0)->object->id);
+    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 1)->object->id);
     intersects_destroy(&xs);
 }
 
 static void test_hit_with_all_positives(void)
 {
     Sphere s = sphere();
-    Intersect i1 = intersect(1, s.id);
-    Intersect i2 = intersect(2, s.id);
+    Intersect i1 = intersect(1, &s);
+    Intersect i2 = intersect(2, &s);
     Intersects xs = intersects(2, i1, i2);
     Intersect *hit = intersect_hit(&xs);
     TEST_ASSERT_TRUE(intersect_equal(&i1, hit));
@@ -48,8 +48,8 @@ static void test_hit_with_all_positives(void)
 static void test_hit_when_some_negative(void)
 {
     Sphere s = sphere();
-    Intersect i1 = intersect(-1, s.id);
-    Intersect i2 = intersect(1, s.id);
+    Intersect i1 = intersect(-1, &s);
+    Intersect i2 = intersect(1, &s);
     Intersects xs = intersects(2, i1, i2);
     Intersect *hit = intersect_hit(&xs);
     TEST_ASSERT_TRUE(intersect_equal(&i2, hit));
@@ -59,8 +59,8 @@ static void test_hit_when_some_negative(void)
 static void test_hit_when_all_negative(void)
 {
     Sphere s = sphere();
-    Intersect i1 = intersect(-2, s.id);
-    Intersect i2 = intersect(-1, s.id);
+    Intersect i1 = intersect(-2, &s);
+    Intersect i2 = intersect(-1, &s);
     Intersects xs = intersects(2, i1, i2);
     Intersect *hit = intersect_hit(&xs);
     TEST_ASSERT_EQUAL_PTR(NULL, hit);
@@ -70,10 +70,10 @@ static void test_hit_when_all_negative(void)
 static void test_hit_unordered_intersects(void)
 {
     Sphere s = sphere();
-    Intersect i1 = intersect(5, s.id);
-    Intersect i2 = intersect(7, s.id);
-    Intersect i3 = intersect(-3, s.id);
-    Intersect i4 = intersect(2, s.id);
+    Intersect i1 = intersect(5, &s);
+    Intersect i2 = intersect(7, &s);
+    Intersect i3 = intersect(-3, &s);
+    Intersect i4 = intersect(2, &s);
     Intersects xs = intersects(4, i1, i2, i3, i4);
     Intersect *hit = intersect_hit(&xs);
     TEST_ASSERT_EQUAL_FLOAT(2, hit->t);

@@ -39,6 +39,8 @@ typedef Tuple Color;
 #define color(r, g, b) ((Tuple) { r, g, b, 0.0 })
 
 #define ORIGIN point(0, 0, 0)
+#define BLACK color(0, 0, 0)
+#define WHITE color(1, 1, 1)
 
 /**
  * \brief Checks if a tuple is a point
@@ -115,6 +117,11 @@ float tuple_dot(const Tuple *a, const Tuple *b);
  * \brief Tuple cross product
  */
 Tuple tuple_cross(const Tuple *a, const Tuple *b);
+
+/**
+ * \brief Reflect a vector against a surface
+ */
+Tuple tuple_reflect(const Vec4 *v, const Vec4 *normal);
 
 #endif // _TUPLE_H_
 

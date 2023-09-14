@@ -94,3 +94,9 @@ Tuple tuple_cross(const Tuple *a, const Tuple *b)
                   a->z * b->x - a->x * b->z,
                   a->x * b->y - a->y * b->x);
 }
+
+Tuple tuple_reflect(const Vec4 *v, const Vec4 *normal)
+{
+    Vec4 mul = tuple_mul(normal, 2 * tuple_dot(v, normal));
+    return tuple_sub(v, &mul);
+}

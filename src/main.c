@@ -15,6 +15,9 @@ int main(int argc, char **argv)
     f32 canvas_dim = 100;
     Canvas c = canvas(canvas_dim, canvas_dim);
     Sphere s = sphere();
+    s.material.color = color(1, 0.2, 1);
+
+    PointLight light = point_light(point(-10, 10, -10), WHITE);
 
     f32 wall_z = 10;
     f32 wall_size = 7;
@@ -31,8 +34,13 @@ int main(int argc, char **argv)
             dir = tuple_normalize(&dir);
             Ray r = ray(origin, dir);
             Intersects xs = intersect_sphere(&s, &r);
-            if (intersect_hit(&xs)) {
-                canvas_write_pixel(&c, x, y, &FG);
+            Intersect *hit = intersect_hit(&xs);
+            if (hit) {
+                Point hitp = ray_position(&r, hit->t);
+                Vec4 normal = sphere_normal_at(&s, &hitp);
+                Vec4 eyev = tuple_neg(&r.direction);
+                Color color = material_lighting(&hit->object->material, &light, &hitp, &eyev, &normal);
+                canvas_write_pixel(&c, x, y, &color);
             } else {
                 canvas_write_pixel(&c, x, y, &BG);
             }

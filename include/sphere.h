@@ -4,11 +4,15 @@
 #include <stddef.h>
 #include "common.h"
 #include "matrix.h"
+#include "material.h"
 
 typedef struct Sphere {
     u32 id;
     Mat4 transform;
+    Material material;
 } Sphere;
+
+typedef Sphere Object;
 
 Sphere sphere(void);
 

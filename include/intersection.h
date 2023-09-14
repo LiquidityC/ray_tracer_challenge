@@ -10,7 +10,7 @@
 
 typedef struct Intersect {
     f32 t;
-    f32 object;
+    Object *object;
 } Intersect;
 
 #define intersect(t, o) ((Intersect) { t, o })
@@ -31,7 +31,7 @@ Intersects intersects(int n, ...);
 
 Intersects intersects_new(f32 t, f32 o);
 
-void intersects_add(Intersects *xs, f32 t, f32 object);
+void intersects_add(Intersects *xs, f32 t, Object *object);
 
 void intersects_push(Intersects *xs, Intersect x);
 

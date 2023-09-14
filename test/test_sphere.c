@@ -3,6 +3,7 @@
 #include "ray.h"
 #include "intersection.h"
 #include "transformation_chain.h"
+#include "test_macros.h"
 
 void setUp(void)
 {
@@ -106,6 +107,22 @@ static void test_normal_on_transformed_sphere(void)
     TEST_ASSERT_TRUE(vec4_equal(&exp, &n));
 }
 
+static void test_sphere_has_material(void)
+{
+    Sphere s = sphere();
+    Material m = material();
+    TEST_ASSERT_EQUAL_MATERIAL(m, s.material);
+}
+
+static void test_sphere_assigned_material(void)
+{
+    Sphere s = sphere();
+    Material m = material();
+    m.ambient = 1;
+    s.material = m;
+    TEST_ASSERT_EQUAL_MATERIAL(m, s.material);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -119,5 +136,7 @@ int main(void)
     RUN_TEST(test_normal_is_normalized);
     RUN_TEST(test_normal_on_translated_sphere);
     RUN_TEST(test_normal_on_transformed_sphere);
+    RUN_TEST(test_sphere_has_material);
+    RUN_TEST(test_sphere_assigned_material);
     return UNITY_END();
 }

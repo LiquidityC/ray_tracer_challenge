@@ -8,7 +8,7 @@ void intersects_init(Intersects *xs)
     xs->head = NULL;
 }
 
-void intersects_add(Intersects *xs, f32 t, f32 object)
+void intersects_add(Intersects *xs, f32 t, Object *object)
 {
     Intersect i = { t, object };
     intersects_push(xs, i);
@@ -125,8 +125,8 @@ Intersects intersect_sphere(Sphere *s, Ray *r)
     f32 t1 = (-b - sqrt(discriminant)) / (2.0 * a);
     f32 t2 = (-b + sqrt(discriminant)) / (2.0 * a);
 
-    intersects_add(&inters, min(t1, t2), s->id);
-    intersects_add(&inters, max(t1, t2), s->id);
+    intersects_add(&inters, min(t1, t2), s);
+    intersects_add(&inters, max(t1, t2), s);
 
 out:
     return inters;
