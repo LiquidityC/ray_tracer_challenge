@@ -2,6 +2,7 @@
 #include "ray.h"
 #include "sphere.h"
 #include "intersection.h"
+#include "test_macros.h"
 
 void setUp(void)
 {
@@ -82,6 +83,40 @@ static void test_hit_unordered_intersects(void)
     TEST_ASSERT_EQUAL_PTR(NULL, xs.head);
 }
 
+static void test_hit_precomp(void)
+{
+    Ray r = ray(point(0, 0, -5), vector(0, 0, 1));
+    Sphere s = sphere();
+    Intersect i = intersect(4, &s);
+    IntersectPrecomp comp = intersect_precomp(&i, &r);
+    Sphere comp_sphere = *comp.object;
+    TEST_ASSERT_EQUAL_SPHERE(s, comp_sphere);
+    TEST_ASSERT_EQUAL_VEC4(point(0, 0, -1), comp.point);
+    TEST_ASSERT_EQUAL_VEC4(vector(0, 0, -1), comp.eyev);
+    TEST_ASSERT_EQUAL_VEC4(vector(0, 0, -1), comp.normalv);
+}
+
+static void test_hit_precomp_not_inside(void)
+{
+    Ray r = ray(point(0, 0, -5), vector(0, 0, 1));
+    Sphere s = sphere();
+    Intersect i = intersect(4, &s);
+    IntersectPrecomp comp = intersect_precomp(&i, &r);
+    TEST_ASSERT_FALSE(comp.inside);
+}
+
+static void test_hit_precomp_inside(void)
+{
+    Ray r = ray(point(0, 0, 0), vector(0, 0, 1));
+    Sphere s = sphere();
+    Intersect i = intersect(1, &s);
+    IntersectPrecomp comp = intersect_precomp(&i, &r);
+    TEST_ASSERT_EQUAL_VEC4(point(0, 0, 1), comp.point);
+    TEST_ASSERT_EQUAL_VEC4(vector(0, 0, -1), comp.eyev);
+    TEST_ASSERT_TRUE(comp.inside);
+    TEST_ASSERT_EQUAL_VEC4(vector(0, 0, -1), comp.normalv);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -91,5 +126,8 @@ int main(void)
     RUN_TEST(test_hit_when_some_negative);
     RUN_TEST(test_hit_when_all_negative);
     RUN_TEST(test_hit_unordered_intersects);
+    RUN_TEST(test_hit_precomp);
+    RUN_TEST(test_hit_precomp_not_inside);
+    RUN_TEST(test_hit_precomp_inside);
     return UNITY_END();
 }

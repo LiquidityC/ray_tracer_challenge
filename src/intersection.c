@@ -34,6 +34,15 @@ void intersects_push(Intersects *xs, Intersect x)
     }
 }
 
+void intersects_merge(Intersects *xs, const Intersects *other)
+{
+    Xsn *n = other->head;
+    while (n != NULL) {
+        intersects_push(xs, n->x);
+        n = n->next;
+    }
+}
+
 Intersects intersects(int n, ...)
 {
     Intersects xs;
@@ -81,6 +90,17 @@ Intersect* intersect_hit(const Intersects *xs)
     }
 }
 
+Color intersect_shade_hit(const World *w, const IntersectPrecomp *comp)
+{
+    Color c = color(1, 1, 1);
+    for (size_t i = 0; i < w->lights.len; ++i) {
+        PointLight *light = &w->lights.objects[i];
+        Color shade =  material_lighting(&comp->object->material, light, &comp->point, &comp->eyev, &comp->normalv);
+        c = tuple_prod(&c, &shade);
+    }
+    return c;
+}
+
 bool intersect_equal(const Intersect *a, const Intersect *b)
 {
     return a->t == b->t && a->object == b->object;
@@ -96,6 +116,23 @@ void intersects_destroy(Intersects *xs)
         ptr = next;
     }
     xs->head = NULL;
+}
+
+IntersectPrecomp intersect_precomp(Intersect *i, Ray *r)
+{
+    IntersectPrecomp comp = {0};
+    comp.t = i->t;
+    comp.object = i->object;
+    comp.point = ray_position(r, comp.t);
+    comp.eyev = tuple_neg(&r->direction);
+    comp.normalv = sphere_normal_at(comp.object, &comp.point);
+    if (tuple_dot(&comp.normalv, &comp.eyev) < 0) {
+        comp.inside = true;
+        comp.normalv = tuple_neg(&comp.normalv);
+    } else {
+        comp.inside = false;
+    }
+    return comp;
 }
 
 Intersects intersect_sphere(Sphere *s, Ray *r)
@@ -130,4 +167,19 @@ Intersects intersect_sphere(Sphere *s, Ray *r)
 
 out:
     return inters;
+}
+
+Intersects intersect_world(Ray *r, World *w)
+{
+    Intersects xs;
+    intersects_init(&xs);
+
+    /* TODO(Linus): Optimize? */
+    for (size_t i = 0; i < w->objects.len; ++i) {
+        Object *o = w->objects.objects + i;
+        Intersects sxs = intersect_sphere(o, r);
+        intersects_merge(&xs, &sxs);
+    }
+
+    return xs;
 }

@@ -21,5 +21,19 @@
     TEST_ASSERT_EQUAL_FLOAT(e.specular, m.specular); \
     TEST_ASSERT_EQUAL_FLOAT(e.shininess, m.shininess)
 
+#define TEST_ASSERT_EQUAL_MAT4(a, b) \
+    TEST_ASSERT_EQUAL_VEC4(a.rows[0], b.rows[0]); \
+    TEST_ASSERT_EQUAL_VEC4(a.rows[1], b.rows[1]); \
+    TEST_ASSERT_EQUAL_VEC4(a.rows[2], b.rows[2]); \
+    TEST_ASSERT_EQUAL_VEC4(a.rows[3], b.rows[3])
+
+#define TEST_ASSERT_EQUAL_SPHERE(a, b) \
+    TEST_ASSERT_EQUAL_MATERIAL(a.material, b.material); \
+    TEST_ASSERT_EQUAL_MAT4(a.transform, b.transform)
+
+#define TEST_ASSERT_EQUAL_POINTLIGHT(l1, l2) \
+    TEST_ASSERT_EQUAL_VEC4(l1.position, l2.position); \
+    TEST_ASSERT_EQUAL_COLOR(l1.intensity, l2.intensity)
+
 #endif  // TEST_MACROS_H_
 

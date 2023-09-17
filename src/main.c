@@ -12,10 +12,12 @@ int main(int argc, char **argv)
     static const Color FG = color(0, 1, 0);
     static const Color BG = color(0.2, 0.2, 0.2);
 
-    f32 canvas_dim = 100;
+    f32 canvas_dim = 600;
     Canvas c = canvas(canvas_dim, canvas_dim);
     Sphere s = sphere();
     s.material.color = color(1, 0.2, 1);
+
+    //s.transform = mat4_mul(&s.transform, &scaling(1, 0.5, 1));
 
     PointLight light = point_light(point(-10, 10, -10), WHITE);
 
