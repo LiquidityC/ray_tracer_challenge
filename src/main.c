@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include "camera.h"
+#include "transformation_chain.h"
 #include "tuple.h"
 #include "canvas.h"
 #include "matrix.h"
@@ -12,46 +14,85 @@ int main(int argc, char **argv)
     static const Color FG = color(0, 1, 0);
     static const Color BG = color(0.2, 0.2, 0.2);
 
-    f32 canvas_dim = 600;
-    Canvas c = canvas(canvas_dim, canvas_dim);
-    Sphere s = sphere();
-    s.material.color = color(1, 0.2, 1);
+    Sphere floor = sphere();
+    floor.transform = scaling(10, 0.01, 10);
+    floor.material = material();
+    floor.material.color = color(1, 0.9, 0.9);
+    floor.material.specular = 0;
 
-    //s.transform = mat4_mul(&s.transform, &scaling(1, 0.5, 1));
-
-    PointLight light = point_light(point(-10, 10, -10), WHITE);
-
-    f32 wall_z = 10;
-    f32 wall_size = 7;
-    f32 pixel_size = wall_size / canvas_dim;
-    f32 half = wall_size / 2;
-    Point origin = point(0, 0, -5);
-
-    for (size_t y = 0; y < canvas_dim; ++y) {
-        f32 world_y = half - pixel_size * y;
-        for (size_t x = 0; x < canvas_dim; ++x) {
-            f32 world_x = -half + pixel_size * x;
-            Point dest = point(world_x, world_y, wall_z);
-            Vec4 dir = tuple_sub(&dest, &origin);
-            dir = tuple_normalize(&dir);
-            Ray r = ray(origin, dir);
-            Intersects xs = intersect_sphere(&s, &r);
-            Intersect *hit = intersect_hit(&xs);
-            if (hit) {
-                Point hitp = ray_position(&r, hit->t);
-                Vec4 normal = sphere_normal_at(&s, &hitp);
-                Vec4 eyev = tuple_neg(&r.direction);
-                Color color = material_lighting(&hit->object->material, &light, &hitp, &eyev, &normal);
-                canvas_write_pixel(&c, x, y, &color);
-            } else {
-                canvas_write_pixel(&c, x, y, &BG);
-            }
-            intersects_destroy(&xs);
-        }
+    Sphere lwall = sphere();
+    chain_begin_mat4(IDENTITY);
+    {
+        // TODO: These are in reverse compared to examples. Fix it!
+        scal(10, 0.01, 10);
+        rot_x(M_PI/2);
+        rot_y(-M_PI/4);
+        trans(0, 0, 5);
     }
+    lwall.transform = chain_end_mat4();
+    lwall.material = floor.material;
 
-    canvas_write_ppm(&c, "sphere.ppm");
+    Sphere rwall = sphere();
+    chain_begin_mat4(IDENTITY);
+    {
+        scal(10, 0.01, 10);
+        rot_x(M_PI/2);
+        rot_y(M_PI/4);
+        trans(0, 0, 5);
+    }
+    rwall.transform = chain_end_mat4();
+    rwall.material = floor.material;
 
-    canvas_destroy(&c);
+    Sphere middle = sphere();
+    middle.transform = translation(-0.5, 1, 0.5);
+    middle.material = material();
+    middle.material.color = color(0.1, 1, 0.5);
+    middle.material.diffuse = 0.7;
+    middle.material.specular = 0.3;
+
+    Sphere right = sphere();
+    chain_begin_mat4(IDENTITY);
+    {
+        scal(0.5, 0.5, 0.5);
+        trans(1.5, 0.5, -0.5);
+    }
+    right.transform = chain_end_mat4();
+    right.material = material();
+    right.material.color = color(0.5, 1, 0.1);
+    right.material.diffuse = 0.7;
+    right.material.specular = 0.3;
+
+    Sphere left = sphere();
+    chain_begin_mat4(IDENTITY);
+    {
+        scal(0.33, 0.33, 0.33);
+        trans(-1.5, 0.33, -0.75);
+    }
+    left.transform = chain_end_mat4();
+    right.material.color = color(1, 0.8, 1);
+    right.material.diffuse = 0.7;
+    right.material.specular = 0.3;
+
+    PointLight light = point_light(point(-10, 10, -10), color(1, 1, 1));
+
+    World world;
+    world_init(&world);
+
+    ll_add(&world.lights, light);
+    ol_add(&world.objects, lwall);
+    ol_add(&world.objects, rwall);
+    ol_add(&world.objects, floor);
+    ol_add(&world.objects, left);
+    ol_add(&world.objects, right);
+    ol_add(&world.objects, middle);
+
+    Camera cam = camera(800, 800, M_PI/3);
+    cam.transform = mat4_view_transform(&point(0, 1.5, -5), &point(0, 1, 0), &point(0, 1, 0));
+
+    Canvas image = camera_render(&cam, &world);
+    canvas_write_ppm(&image, "world.ppm");
+    canvas_destroy(&image);
+    world_destroy(&world);
+
     return 0;
 }

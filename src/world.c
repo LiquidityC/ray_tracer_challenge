@@ -13,12 +13,13 @@ Color world_color_at(World *w, Ray *r)
 {
     Intersects xs = intersect_world(r, w);
     Intersect *hit = intersect_hit(&xs);
+    Color c = BLACK;
     if (hit) {
         IntersectPrecomp comp = intersect_precomp(hit, r);
-        return intersect_shade_hit(w, &comp);
-    } else {
-        return BLACK;
+        c = intersect_shade_hit(w, &comp);
     }
+    intersects_destroy(&xs);
+    return c;
 }
 
 void world_destroy(World *world)

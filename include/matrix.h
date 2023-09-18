@@ -72,6 +72,8 @@ typedef Mat4 Transform;
         { 0, 0, 0, 1 }, \
         }})
 
+Mat4 mat4_view_transform(Point *from, Point *to, Vec4 *up);
+
 bool mat4_equals(const Mat4 *a, const Mat4 *b);
 
 bool mat3_equals(const Mat3 *a, const Mat3 *b);

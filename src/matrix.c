@@ -2,6 +2,23 @@
 #include <stdio.h>
 #include <stddef.h>
 
+Mat4 mat4_view_transform(Point *from, Point *to, Vec4 *up)
+{
+    Vec4 forward = tuple_sub(to, from);
+    forward = tuple_normalize(&forward);
+    Vec4 upn = tuple_normalize(up);
+    Vec4 left = tuple_cross(&forward, &upn);
+    Vec4 true_up = tuple_cross(&left, &forward);
+    Mat4 orientation = (Mat4) {{
+        { left.x, left.y, left.z, 0 },
+        { true_up.x, true_up.y, true_up.z, 0 },
+        { -forward.x, -forward.y, -forward.z, 0 },
+        { 0, 0, 0, 1 },
+    }};
+    Mat4 transform = translation(-from->x, -from->y, -from->z);
+    return mat4_mul(&orientation, &transform);
+}
+
 bool mat4_equals(const Mat4 *a, const Mat4 *b)
 {
     for (size_t i = 0; i < 4; ++i) {

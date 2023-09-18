@@ -1,6 +1,7 @@
 #include "unity.h"
 #include "matrix.h"
 #include "transformation_chain.h"
+#include "test_macros.h"
 
 void setUp(void)
 {
@@ -192,6 +193,51 @@ static void test_chain_transformations(void)
     TEST_ASSERT_TRUE(tuple_equal(&exp, &p));
 }
 
+static void test_view_transform_default_orientation(void)
+{
+    Point from = point(0, 0, 0);
+    Point to = point(0, 0, -1);
+    Vec4 up = vector(0, 1, 0);
+    Mat4 t = mat4_view_transform(&from, &to, &up);
+    Mat4 exp = IDENTITY;
+    TEST_ASSERT_EQUAL_MAT4(exp, t);
+}
+
+static void test_view_transform_positive_z(void)
+{
+    Point from = point(0, 0, 0);
+    Point to = point(0, 0, 1);
+    Vec4 up = vector(0, 1, 0);
+    Mat4 t = mat4_view_transform(&from, &to, &up);
+    Mat4 exp = scaling(-1, 1, -1);
+    TEST_ASSERT_EQUAL_MAT4(exp, t);
+}
+
+static void test_view_transform_moves_world(void)
+{
+    Point from = point(0, 0, 8);
+    Point to = point(0, 0, 0);
+    Vec4 up = vector(0, 1, 0);
+    Mat4 t = mat4_view_transform(&from, &to, &up);
+    Mat4 exp = translation(0, 0, -8);
+    TEST_ASSERT_EQUAL_MAT4(exp, t);
+}
+
+static void test_arbitrary_view_transform(void)
+{
+    Point from = point(1, 3, 2);
+    Point to = point(4, -2, 8);
+    Vec4 up = vector(1, 1, 0);
+    Mat4 t = mat4_view_transform(&from, &to, &up);
+    Mat4 exp = {{
+        { -0.50709, 0.50709, 0.67612, -2.36643 },
+        { 0.76772, 0.60609, 0.12122, -2.82843 },
+        { -0.35857, 0.59761, -0.71714, 0.00000 },
+        { 0.00000, 0.00000, 0.00000, 1.00000 },
+    }};
+    TEST_ASSERT_TRUE(mat4_equals(&exp, &t));
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -209,5 +255,10 @@ int main(void)
     RUN_TEST(test_shearing);
     RUN_TEST(test_individual_transformations);
     RUN_TEST(test_chain_transformations);
+    RUN_TEST(test_view_transform_default_orientation);
+    RUN_TEST(test_view_transform_positive_z);
+    RUN_TEST(test_view_transform_moves_world);
+    RUN_TEST(test_arbitrary_view_transform);
+
     return UNITY_END();
 }

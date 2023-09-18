@@ -179,6 +179,7 @@ Intersects intersect_world(Ray *r, World *w)
         Object *o = w->objects.objects + i;
         Intersects sxs = intersect_sphere(o, r);
         intersects_merge(&xs, &sxs);
+        intersects_destroy(&sxs);
     }
 
     return xs;
