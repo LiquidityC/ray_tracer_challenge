@@ -23,7 +23,7 @@ static struct {
             return; \
         } \
         if (instance.mode == m_Mat) { \
-            instance.m = mat4_mul(&change, &instance.m); \
+            instance.m = mat4_mul(&instance.m, &change); \
         } else { \
             instance.v = mat4_vector_mul(&change, &instance.v); \
         } \

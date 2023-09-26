@@ -24,10 +24,10 @@ int main(int argc, char **argv)
     chain_begin_mat4(IDENTITY);
     {
         // TODO: These are in reverse compared to examples. Fix it!
-        scal(10, 0.01, 10);
-        rot_x(M_PI/2);
-        rot_y(-M_PI/4);
         trans(0, 0, 5);
+        rot_y(-M_PI/4);
+        rot_x(M_PI/2);
+        scal(10, 0.01, 10);
     }
     lwall.transform = chain_end_mat4();
     lwall.material = floor.material;
@@ -35,10 +35,10 @@ int main(int argc, char **argv)
     Sphere rwall = sphere();
     chain_begin_mat4(IDENTITY);
     {
-        scal(10, 0.01, 10);
-        rot_x(M_PI/2);
-        rot_y(M_PI/4);
         trans(0, 0, 5);
+        rot_y(M_PI/4);
+        rot_x(M_PI/2);
+        scal(10, 0.01, 10);
     }
     rwall.transform = chain_end_mat4();
     rwall.material = floor.material;
@@ -53,8 +53,8 @@ int main(int argc, char **argv)
     Sphere right = sphere();
     chain_begin_mat4(IDENTITY);
     {
-        scal(0.5, 0.5, 0.5);
         trans(1.5, 0.5, -0.5);
+        scal(0.5, 0.5, 0.5);
     }
     right.transform = chain_end_mat4();
     right.material = material();
@@ -65,8 +65,8 @@ int main(int argc, char **argv)
     Sphere left = sphere();
     chain_begin_mat4(IDENTITY);
     {
-        scal(0.33, 0.33, 0.33);
         trans(-1.5, 0.33, -0.75);
+        scal(0.33, 0.33, 0.33);
     }
     left.transform = chain_end_mat4();
     right.material.color = color(1, 0.8, 1);
