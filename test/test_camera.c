@@ -11,23 +11,23 @@ void tearDown() { }
 
 static void test_camera_construction(void)
 {
-    f32 hsize = 160;
-    f32 vsize = 120;
-    f32 fov = M_PI/2;
+    f64 hsize = 160;
+    f64 vsize = 120;
+    f64 fov = M_PI/2;
     Camera c = camera(hsize, vsize, fov);
-    TEST_ASSERT_EQUAL_FLOAT(160, c.hsize);
-    TEST_ASSERT_EQUAL_FLOAT(120, c.vsize);
-    TEST_ASSERT_EQUAL_FLOAT(M_PI/2, c.fov);
+    TEST_ASSERT_EQUAL_DOUBLE(160, c.hsize);
+    TEST_ASSERT_EQUAL_DOUBLE(120, c.vsize);
+    TEST_ASSERT_EQUAL_DOUBLE(M_PI/2, c.fov);
     TEST_ASSERT_EQUAL_MAT4(IDENTITY, c.transform);
 }
 
 static void test_camera_pixel_size(void)
 {
-    f32 hsize = 160;
-    f32 vsize = 120;
-    f32 fov = M_PI/2;
+    f64 hsize = 160;
+    f64 vsize = 120;
+    f64 fov = M_PI/2;
     Camera c = camera(hsize, vsize, fov);
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 0.01, c.pixel_size);
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, 0.01, c.pixel_size);
 }
 
 static void test_camera_center_canvas_ray(void)

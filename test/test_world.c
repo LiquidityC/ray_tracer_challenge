@@ -52,10 +52,10 @@ static void test_world_intersect(void)
     Intersects xs = intersect_world(&r, &w);
 
     TEST_ASSERT_EQUAL_size_t(4, xs.len);
-    TEST_ASSERT_EQUAL_FLOAT(4, intersects_get(&xs, 0)->t);
-    TEST_ASSERT_EQUAL_FLOAT(4.5, intersects_get(&xs, 1)->t);
-    TEST_ASSERT_EQUAL_FLOAT(5.5, intersects_get(&xs, 2)->t);
-    TEST_ASSERT_EQUAL_FLOAT(6, intersects_get(&xs, 3)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(4, intersects_get(&xs, 0)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(4.5, intersects_get(&xs, 1)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(5.5, intersects_get(&xs, 2)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(6, intersects_get(&xs, 3)->t);
 
     intersects_destroy(&xs);
     world_destroy(&w);
@@ -114,6 +114,53 @@ static void test_world_color_at_when_intersect_behind(void)
     TEST_ASSERT_EQUAL_COLOR(inner->material.color, c);
 }
 
+static void test_world_is_shadowed_nothing_blocking(void)
+{
+    World w = default_world();
+    Point p = point(0, 10, 0);
+    TEST_ASSERT_FALSE(world_is_shadowed(&w, 0, &p));
+}
+
+static void test_world_is_shadowed_sphere_blocking(void)
+{
+    World w = default_world();
+    Point p = point(10, -10, 10);
+    TEST_ASSERT_TRUE(world_is_shadowed(&w, 0, &p));
+}
+
+static void test_world_is_shadowed_point_behind_light(void)
+{
+    World w = default_world();
+    Point p = point(-20, 20, -20);
+    TEST_ASSERT_FALSE(world_is_shadowed(&w, 0, &p));
+}
+
+static void test_world_is_shadowed_point_between(void)
+{
+    World w = default_world();
+    Point p = point(-2, 2, -2);
+    TEST_ASSERT_FALSE(world_is_shadowed(&w, 0, &p));
+}
+
+static void test_world_shade_hit_shadow(void)
+{
+    World w;
+    world_init(&w);
+    ll_add(&w.lights, point_light(point(0, 0, -10), color(1, 1, 1)));
+
+    Object s1 = sphere();
+    ol_add(&w.objects, s1);
+    Object s2 = sphere();
+    s2.transform = translation(0, 0, 10);
+    ol_add(&w.objects, s2);
+
+    Ray r = ray(point(0, 0, 5), vector(0, 0, 1));
+    Intersect x = intersect(4, &s2);
+    IntersectPrecomp comp = intersect_precomp(&x, &r);
+    Color result = intersect_shade_hit(&w, &comp);
+    TEST_ASSERT_EQUAL_COLOR(color(0.1, 0.1, 0.1), result);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -125,5 +172,11 @@ int main(void)
     RUN_TEST(test_world_color_at_miss);
     RUN_TEST(test_world_color_at_hit);
     RUN_TEST(test_world_color_at_when_intersect_behind);
+    RUN_TEST(test_world_color_at_when_intersect_behind);
+    RUN_TEST(test_world_is_shadowed_nothing_blocking);
+    RUN_TEST(test_world_is_shadowed_sphere_blocking);
+    RUN_TEST(test_world_is_shadowed_point_behind_light);
+    RUN_TEST(test_world_is_shadowed_point_between);
+    RUN_TEST(test_world_shade_hit_shadow);
     return UNITY_END();
 }

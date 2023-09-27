@@ -94,56 +94,56 @@ Mat4 mat4_transpose(const Mat4 *m)
     return res;
 }
 
-f32 mat2_determinant(const Mat2 *m)
+f64 mat2_determinant(const Mat2 *m)
 {
-    f32 a = m->elem[0][0];
-    f32 b = m->elem[0][1];
-    f32 c = m->elem[1][0];
-    f32 d = m->elem[1][1];
+    f64 a = m->elem[0][0];
+    f64 b = m->elem[0][1];
+    f64 c = m->elem[1][0];
+    f64 d = m->elem[1][1];
 
     return a * d - b * c;
 }
 
-f32 mat3_minor(const Mat3 *m, u32 row, u32 col)
+f64 mat3_minor(const Mat3 *m, u32 row, u32 col)
 {
     Mat2 sub = mat3_submatrix(m, row, col);
     return mat2_determinant(&sub);
 }
 
-f32 mat4_minor(const Mat4 *m, u32 row, u32 col)
+f64 mat4_minor(const Mat4 *m, u32 row, u32 col)
 {
     Mat3 sub = mat4_submatrix(m, row, col);
     return mat3_determinant(&sub);
 }
 
-f32 mat3_cofactor(const Mat3 *m, u32 row, u32 col)
+f64 mat3_cofactor(const Mat3 *m, u32 row, u32 col)
 {
-    f32 factor = (row + col) % 2 == 1 ? -1 : 1;
+    f64 factor = (row + col) % 2 == 1 ? -1 : 1;
     return factor * mat3_minor(m, row, col);
 }
 
-f32 mat4_cofactor(const Mat4 *m, u32 row, u32 col)
+f64 mat4_cofactor(const Mat4 *m, u32 row, u32 col)
 {
-    f32 factor = (row + col) % 2 == 1 ? -1 : 1;
+    f64 factor = (row + col) % 2 == 1 ? -1 : 1;
     return factor * mat4_minor(m, row, col);
 }
 
-f32 mat3_determinant(const Mat3 *m)
+f64 mat3_determinant(const Mat3 *m)
 {
     const Vec3 *row = &m->rows[0];
 
-    f32 res = 0;
+    f64 res = 0;
     for (size_t i = 0; i < 3; ++i) {
         res += row->elem[i] * mat3_cofactor(m, 0, i);
     }
     return res;
 }
 
-f32 mat4_determinant(const Mat4 *m)
+f64 mat4_determinant(const Mat4 *m)
 {
     const Vec4 *row = &m->rows[0];
 
-    f32 res = 0;
+    f64 res = 0;
     for (size_t i = 0; i < 4; ++i) {
         res += row->elem[i] * mat4_cofactor(m, 0, i);
     }
@@ -184,7 +184,7 @@ bool mat4_is_invertible(const Mat4 *m)
 Mat4 mat4_invert(const Mat4 *m)
 {
     Mat4 res = {0};
-    f32 determinant = mat4_determinant(m);
+    f64 determinant = mat4_determinant(m);
 
     if (determinant == 0) {
         goto out;

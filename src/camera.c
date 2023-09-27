@@ -2,11 +2,11 @@
 #include "camera.h"
 #include "tuple.h"
 
-Camera camera(f32 hs, f32 vs, f32 fov)
+Camera camera(f64 hs, f64 vs, f64 fov)
 {
-    f32 half_view = tan(fov/2);
-    f32 half_width, half_height;
-    f32 aspect = hs / vs;
+    f64 half_view = tan(fov/2);
+    f64 half_width, half_height;
+    f64 aspect = hs / vs;
 
     if (aspect >= 1) {
         half_width = half_view;
@@ -28,11 +28,11 @@ Camera camera(f32 hs, f32 vs, f32 fov)
 
 Ray camera_ray_for_pixel(Camera *c, u32 x, u32 y)
 {
-    f32 xoffset = (x + 0.5) * c->pixel_size;
-    f32 yoffset = (y + 0.5) * c->pixel_size;
+    f64 xoffset = (x + 0.5) * c->pixel_size;
+    f64 yoffset = (y + 0.5) * c->pixel_size;
 
-    f32 world_x = c->half_width - xoffset;
-    f32 world_y = c->half_height - yoffset;
+    f64 world_x = c->half_width - xoffset;
+    f64 world_y = c->half_height - yoffset;
 
     Mat4 cam_inv = mat4_invert(&c->transform);
     Vec4 pixel = mat4_vector_mul(&cam_inv, &point(world_x, world_y, -1));

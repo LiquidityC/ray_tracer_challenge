@@ -29,7 +29,7 @@ Color *canvas_get_pixel(Canvas *c, u32 x, u32 y)
     return &c->grid[y * c->width + x];
 }
 
-static u32 to_color_octal(f32 val)
+static u32 to_color_octal(f64 val)
 {
     u32 color = floor((255.0 * val) + 0.5);
     return clamp(color, 0, 255);
@@ -50,8 +50,8 @@ i32 canvas_write_ppm(Canvas *c, const char *ppm_path)
 
     size_t char_count = 0;
     for (size_t i = 0; i < c->width * c->height; ++i) {
-        f32 *it = (f32 *) &c->grid[i];
-        f32 *end = it + 3;
+        f64 *it = (f64 *) &c->grid[i];
+        f64 *end = it + 3;
         while (it != end) {
             char_count += fprintf(fp, "%u", to_color_octal(*it));
             ++it;

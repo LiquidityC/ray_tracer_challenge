@@ -17,7 +17,7 @@ typedef struct Ray {
 /**
  * \brief Calculate a position along the ray after t time has passed
  */
-Point ray_position(Ray *r, f32 t);
+Point ray_position(const Ray *r, f64 t);
 
 /**
  * \brief Transform a ray

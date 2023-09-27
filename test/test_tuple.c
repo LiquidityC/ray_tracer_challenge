@@ -1,6 +1,7 @@
 #include <math.h>
 #include "unity.h"
 #include "tuple.h"
+#include "float.h"
 
 void setUp(void)
 {
@@ -13,19 +14,19 @@ void tearDown(void)
 static void test_tuple_is_point(void)
 {
     Tuple t = { 4.3, -4.2, 3.1, 1.0 };
-    TEST_ASSERT_EQUAL_FLOAT(4.3, t.x);
-    TEST_ASSERT_EQUAL_FLOAT(-4.2, t.y);
-    TEST_ASSERT_EQUAL_FLOAT(3.1, t.z);
-    TEST_ASSERT_EQUAL_FLOAT(1.0, t.w);
+    TEST_ASSERT_EQUAL_DOUBLE(4.3, t.x);
+    TEST_ASSERT_EQUAL_DOUBLE(-4.2, t.y);
+    TEST_ASSERT_EQUAL_DOUBLE(3.1, t.z);
+    TEST_ASSERT_EQUAL_DOUBLE(1.0, t.w);
 }
 
 static void test_tuple_is_vector(void)
 {
     Tuple t = { 4.3, -4.2, 3.1, 0.0 };
-    TEST_ASSERT_EQUAL_FLOAT(4.3, t.x);
-    TEST_ASSERT_EQUAL_FLOAT(-4.2, t.y);
-    TEST_ASSERT_EQUAL_FLOAT(3.1, t.z);
-    TEST_ASSERT_EQUAL_FLOAT(0.0, t.w);
+    TEST_ASSERT_EQUAL_DOUBLE(4.3, t.x);
+    TEST_ASSERT_EQUAL_DOUBLE(-4.2, t.y);
+    TEST_ASSERT_EQUAL_DOUBLE(3.1, t.z);
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, t.w);
 }
 
 static void test_factory_functions(void)
@@ -92,16 +93,16 @@ static void test_divide(void)
 static void test_magnitude(void)
 {
     Vec4 v = vector(0, 1, 0);
-    TEST_ASSERT_EQUAL_FLOAT(1, tuple_magnitude(&v));
+    TEST_ASSERT_EQUAL_DOUBLE(1, tuple_magnitude(&v));
 
     v = vector(0, 0, 1);
-    TEST_ASSERT_EQUAL_FLOAT(1, tuple_magnitude(&v));
+    TEST_ASSERT_EQUAL_DOUBLE(1, tuple_magnitude(&v));
 
     v = vector(1, 2, 3);
-    TEST_ASSERT_EQUAL_FLOAT((float) sqrt(14), tuple_magnitude(&v));
+    TEST_ASSERT_DOUBLE_WITHIN(EPSILON, sqrt(14), tuple_magnitude(&v));
 
     v = vector(-1, -2, -3);
-    TEST_ASSERT_EQUAL_FLOAT((float) sqrt(14), tuple_magnitude(&v));
+    TEST_ASSERT_DOUBLE_WITHIN(EPSILON, sqrt(14), tuple_magnitude(&v));
 }
 
 static void test_normalize(void)
@@ -112,14 +113,14 @@ static void test_normalize(void)
     v = tuple_normalize(&vector(1, 2, 3));
     TEST_ASSERT_TRUE(tuple_equal(&vector(1/sqrt(14), 2/sqrt(14), 3/sqrt(14)), &v));
 
-    TEST_ASSERT_EQUAL_FLOAT(1, tuple_magnitude(&v));
+    TEST_ASSERT_EQUAL_DOUBLE(1, tuple_magnitude(&v));
 }
 
 static void test_dotproduct(void)
 {
     Vec4 a = vector(1, 2, 3);
     Vec4 b = vector(2, 3, 4);
-    TEST_ASSERT_EQUAL_FLOAT(20, tuple_dot(&a, &b));
+    TEST_ASSERT_EQUAL_DOUBLE(20, tuple_dot(&a, &b));
 }
 
 static void test_crossproduct(void)
@@ -135,9 +136,9 @@ static void test_crossproduct(void)
 static void test_color(void)
 {
     Color c = color(-0.5, 0.4, 1.7);
-    TEST_ASSERT_EQUAL_FLOAT(-0.5, c.r);
-    TEST_ASSERT_EQUAL_FLOAT(0.4, c.g);
-    TEST_ASSERT_EQUAL_FLOAT(1.7, c.b);
+    TEST_ASSERT_EQUAL_DOUBLE(-0.5, c.r);
+    TEST_ASSERT_EQUAL_DOUBLE(0.4, c.g);
+    TEST_ASSERT_EQUAL_DOUBLE(1.7, c.b);
 }
 
 static void test_color_arithmetic(void)

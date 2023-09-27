@@ -14,7 +14,9 @@ typedef struct World {
 
 void world_init(World *world);
 
-Color world_color_at(World *w, Ray *r);
+Color world_color_at(const World *w, const Ray *r);
+
+bool world_is_shadowed(const World *w, size_t light_index, const Point *p);
 
 void world_destroy(World *world);
 

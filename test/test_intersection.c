@@ -3,6 +3,7 @@
 #include "sphere.h"
 #include "intersection.h"
 #include "test_macros.h"
+#include "float.h"
 
 void setUp(void)
 {
@@ -19,8 +20,8 @@ static void test_aggregating_intersections(void)
     Intersect i2 = intersect(2, &s);
     Intersects xs = intersects(2, i1, i2);
     TEST_ASSERT_EQUAL_size_t(2, xs.len);
-    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 0)->object->id);
-    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 1)->object->id);
+    TEST_ASSERT_EQUAL_DOUBLE(s.id, intersects_get(&xs, 0)->object->id);
+    TEST_ASSERT_EQUAL_DOUBLE(s.id, intersects_get(&xs, 1)->object->id);
     intersects_destroy(&xs);
 }
 
@@ -30,8 +31,8 @@ static void test_intersection_has_object(void)
     Sphere s = sphere();
     Intersects xs = intersect_sphere(&s, &r);
     TEST_ASSERT_EQUAL_size_t(2, xs.len);
-    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 0)->object->id);
-    TEST_ASSERT_EQUAL_FLOAT(s.id, intersects_get(&xs, 1)->object->id);
+    TEST_ASSERT_EQUAL_DOUBLE(s.id, intersects_get(&xs, 0)->object->id);
+    TEST_ASSERT_EQUAL_DOUBLE(s.id, intersects_get(&xs, 1)->object->id);
     intersects_destroy(&xs);
 }
 
@@ -77,7 +78,7 @@ static void test_hit_unordered_intersects(void)
     Intersect i4 = intersect(2, &s);
     Intersects xs = intersects(4, i1, i2, i3, i4);
     Intersect *hit = intersect_hit(&xs);
-    TEST_ASSERT_EQUAL_FLOAT(2, hit->t);
+    TEST_ASSERT_EQUAL_DOUBLE(2, hit->t);
     TEST_ASSERT_TRUE(intersect_equal(&i4, hit));
     intersects_destroy(&xs);
     TEST_ASSERT_EQUAL_PTR(NULL, xs.head);
@@ -117,6 +118,17 @@ static void test_hit_precomp_inside(void)
     TEST_ASSERT_EQUAL_VEC4(vector(0, 0, -1), comp.normalv);
 }
 
+static void test_hit_precomp_offset(void)
+{
+    Ray r = ray(point(0, 0, -5), vector(0, 0, 1));
+    Object s = sphere();
+    s.transform = translation(0, 0, 1);
+    Intersect i = intersect(5, &s);
+    IntersectPrecomp comp = intersect_precomp(&i, &r);
+    TEST_ASSERT_LESS_THAN_DOUBLE(-EPSILON/2, comp.over_point.z);
+    TEST_ASSERT_LESS_THAN_DOUBLE(comp.point.z, comp.over_point.z);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -129,5 +141,6 @@ int main(void)
     RUN_TEST(test_hit_precomp);
     RUN_TEST(test_hit_precomp_not_inside);
     RUN_TEST(test_hit_precomp_inside);
+    RUN_TEST(test_hit_precomp_offset);
     return UNITY_END();
 }

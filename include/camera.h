@@ -8,16 +8,16 @@
 #include "world.h"
 
 typedef struct Camera {
-    f32 hsize;
-    f32 vsize;
-    f32 fov;
+    f64 hsize;
+    f64 vsize;
+    f64 fov;
     Mat4 transform;
-    f32 half_width;
-    f32 half_height;
-    f32 pixel_size;
+    f64 half_width;
+    f64 half_height;
+    f64 pixel_size;
 } Camera;
 
-Camera camera(f32 hs, f32 vs, f32 fov);
+Camera camera(f64 hs, f64 vs, f64 fov);
 
 Ray camera_ray_for_pixel(Camera *c, u32 x, u32 y);
 

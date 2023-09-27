@@ -1,6 +1,6 @@
 #include "ray.h"
 
-Point ray_position(Ray *r, f32 t)
+Point ray_position(const Ray *r, f64 t)
 {
     Vec4 dist = tuple_mul(&r->direction, t);
     return tuple_add(&r->origin, &dist);

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(ray-tracer-challenge VERSION 0.1.0)
 
+SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -DUNITY_INCLUDE_DOUBLE)
+
 add_subdirectory(unity)
 
 file(GLOB SOURCE_FILES CONFIGURE_DEPENDS src/*.c)

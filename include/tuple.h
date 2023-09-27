@@ -7,25 +7,25 @@
 typedef union Tuple
 {
     struct {
-        float x, y, z, w;
+        f64 x, y, z, w;
     };
     struct {
-        float r, g, b, a;
+        f64 r, g, b, a;
     };
-    float elem[4];
+    f64 elem[4];
 } Tuple;
 
 typedef union Vec3 {
-    f32 elem[3];
+    f64 elem[3];
     struct {
-        f32 x, y, z;
+        f64 x, y, z;
     };
 } Vec3;
 
 typedef union Vec2 {
-    f32 elem[2];
+    f64 elem[2];
     struct {
-        f32 x, y;
+        f64 x, y;
     };
 } Vec2;
 
@@ -86,7 +86,7 @@ Tuple tuple_neg(const Tuple *t);
 /**
  * \brief Multiply a tuple with a scalar
  */
-Tuple tuple_mul(const Tuple *t, float v);
+Tuple tuple_mul(const Tuple *t, f64 v);
 
 /**
  * \brief Multiple a tuple with a tuple
@@ -96,12 +96,12 @@ Tuple tuple_prod(const Tuple *a, const Tuple *b);
 /**
  * \brief Divide a tuple with a scalar
  */
-Tuple tuple_div(const Tuple *t, float v);
+Tuple tuple_div(const Tuple *t, f64 v);
 
 /**
  * \brief Magnitude
  */
-float tuple_magnitude(const Tuple *t);
+f64 tuple_magnitude(const Tuple *t);
 
 /**
  * \brief Normalize a tuple
@@ -111,7 +111,7 @@ Tuple tuple_normalize(const Tuple *t);
 /**
  * \brief Tuple dot product
  */
-float tuple_dot(const Tuple *a, const Tuple *b);
+f64 tuple_dot(const Tuple *a, const Tuple *b);
 
 /**
  * \brief Tuple cross product

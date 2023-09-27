@@ -15,13 +15,13 @@ static void test_matrix_create(void) {
             {13.5, 14.5, 15.5, 16.5},
         }};
 
-        TEST_ASSERT_EQUAL_FLOAT(1, m.elem[0][0]);
-        TEST_ASSERT_EQUAL_FLOAT(4, m.elem[0][3]);
-        TEST_ASSERT_EQUAL_FLOAT(5.5, m.elem[1][0]);
-        TEST_ASSERT_EQUAL_FLOAT(7.5, m.elem[1][2]);
-        TEST_ASSERT_EQUAL_FLOAT(11, m.elem[2][2]);
-        TEST_ASSERT_EQUAL_FLOAT(13.5, m.elem[3][0]);
-        TEST_ASSERT_EQUAL_FLOAT(15.5, m.elem[3][2]);
+        TEST_ASSERT_EQUAL_DOUBLE(1, m.elem[0][0]);
+        TEST_ASSERT_EQUAL_DOUBLE(4, m.elem[0][3]);
+        TEST_ASSERT_EQUAL_DOUBLE(5.5, m.elem[1][0]);
+        TEST_ASSERT_EQUAL_DOUBLE(7.5, m.elem[1][2]);
+        TEST_ASSERT_EQUAL_DOUBLE(11, m.elem[2][2]);
+        TEST_ASSERT_EQUAL_DOUBLE(13.5, m.elem[3][0]);
+        TEST_ASSERT_EQUAL_DOUBLE(15.5, m.elem[3][2]);
     }
 
     {
@@ -30,10 +30,10 @@ static void test_matrix_create(void) {
             { 1, -2 },
         }};
 
-        TEST_ASSERT_EQUAL_FLOAT(-3, m.elem[0][0]);
-        TEST_ASSERT_EQUAL_FLOAT(5, m.elem[0][1]);
-        TEST_ASSERT_EQUAL_FLOAT(1, m.elem[1][0]);
-        TEST_ASSERT_EQUAL_FLOAT(-2, m.elem[1][1]);
+        TEST_ASSERT_EQUAL_DOUBLE(-3, m.elem[0][0]);
+        TEST_ASSERT_EQUAL_DOUBLE(5, m.elem[0][1]);
+        TEST_ASSERT_EQUAL_DOUBLE(1, m.elem[1][0]);
+        TEST_ASSERT_EQUAL_DOUBLE(-2, m.elem[1][1]);
     }
 
     {
@@ -43,11 +43,11 @@ static void test_matrix_create(void) {
             { 0, 1, 1 },
         }};
 
-        TEST_ASSERT_EQUAL_FLOAT(-3, m.elem[0][0]);
-        TEST_ASSERT_EQUAL_FLOAT(5, m.elem[0][1]);
-        TEST_ASSERT_EQUAL_FLOAT(1, m.elem[1][0]);
-        TEST_ASSERT_EQUAL_FLOAT(-2, m.elem[1][1]);
-        TEST_ASSERT_EQUAL_FLOAT(1, m.elem[2][2]);
+        TEST_ASSERT_EQUAL_DOUBLE(-3, m.elem[0][0]);
+        TEST_ASSERT_EQUAL_DOUBLE(5, m.elem[0][1]);
+        TEST_ASSERT_EQUAL_DOUBLE(1, m.elem[1][0]);
+        TEST_ASSERT_EQUAL_DOUBLE(-2, m.elem[1][1]);
+        TEST_ASSERT_EQUAL_DOUBLE(1, m.elem[2][2]);
     }
 }
 
@@ -171,7 +171,7 @@ static void test_matrix2_determinant(void)
         { 1, 5 },
         { -3, 2 },
     }};
-    TEST_ASSERT_EQUAL_FLOAT(17, mat2_determinant(&m));
+    TEST_ASSERT_EQUAL_DOUBLE(17, mat2_determinant(&m));
 }
 
 static void test_m3_submatrix(void)
@@ -214,7 +214,7 @@ static void test_m3_minor(void)
         { 6, -1, 5 },
     }};
     Mat2 sub = mat3_submatrix(&m, 1, 0);
-    TEST_ASSERT_EQUAL_FLOAT(25, mat2_determinant(&sub));
+    TEST_ASSERT_EQUAL_DOUBLE(25, mat2_determinant(&sub));
     TEST_ASSERT_EQUAL(25, mat3_minor(&m, 1, 0));
 }
 
@@ -225,10 +225,10 @@ static void test_m3_cofactor(void)
         { 2, -1, -7 },
         { 6, -1, 5 },
     }};
-    TEST_ASSERT_EQUAL_FLOAT(-12, mat3_minor(&m, 0, 0));
-    TEST_ASSERT_EQUAL_FLOAT(-12, mat3_cofactor(&m, 0, 0));
-    TEST_ASSERT_EQUAL_FLOAT(25, mat3_minor(&m, 1, 0));
-    TEST_ASSERT_EQUAL_FLOAT(-25, mat3_cofactor(&m, 1, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(-12, mat3_minor(&m, 0, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(-12, mat3_cofactor(&m, 0, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(25, mat3_minor(&m, 1, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(-25, mat3_cofactor(&m, 1, 0));
 }
 
 static void test_m3_determinant(void)
@@ -239,10 +239,10 @@ static void test_m3_determinant(void)
         { 2, 6, 4 },
     }};
 
-    TEST_ASSERT_EQUAL_FLOAT(56, mat3_cofactor(&m, 0, 0));
-    TEST_ASSERT_EQUAL_FLOAT(12, mat3_cofactor(&m, 0, 1));
-    TEST_ASSERT_EQUAL_FLOAT(-46, mat3_cofactor(&m, 0, 2));
-    TEST_ASSERT_EQUAL_FLOAT(-196, mat3_determinant(&m));
+    TEST_ASSERT_EQUAL_DOUBLE(56, mat3_cofactor(&m, 0, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(12, mat3_cofactor(&m, 0, 1));
+    TEST_ASSERT_EQUAL_DOUBLE(-46, mat3_cofactor(&m, 0, 2));
+    TEST_ASSERT_EQUAL_DOUBLE(-196, mat3_determinant(&m));
 }
 
 static void test_m4_determinant(void)
@@ -253,11 +253,11 @@ static void test_m4_determinant(void)
         { 1, 2, -9, 6 },
         { -6, 7, 7, -9 },
     }};
-    TEST_ASSERT_EQUAL_FLOAT(690, mat4_cofactor(&m, 0, 0));
-    TEST_ASSERT_EQUAL_FLOAT(447, mat4_cofactor(&m, 0, 1));
-    TEST_ASSERT_EQUAL_FLOAT(210, mat4_cofactor(&m, 0, 2));
-    TEST_ASSERT_EQUAL_FLOAT(51, mat4_cofactor(&m, 0, 3));
-    TEST_ASSERT_EQUAL_FLOAT(-4071, mat4_determinant(&m));
+    TEST_ASSERT_EQUAL_DOUBLE(690, mat4_cofactor(&m, 0, 0));
+    TEST_ASSERT_EQUAL_DOUBLE(447, mat4_cofactor(&m, 0, 1));
+    TEST_ASSERT_EQUAL_DOUBLE(210, mat4_cofactor(&m, 0, 2));
+    TEST_ASSERT_EQUAL_DOUBLE(51, mat4_cofactor(&m, 0, 3));
+    TEST_ASSERT_EQUAL_DOUBLE(-4071, mat4_determinant(&m));
 }
 
 static void test_m4_invertible(void)
@@ -268,7 +268,7 @@ static void test_m4_invertible(void)
         { 4, -9, 3, -7 },
         { 9, 1, 7, -6 },
     }};
-    TEST_ASSERT_EQUAL_FLOAT(-2120, mat4_determinant(&m));
+    TEST_ASSERT_EQUAL_DOUBLE(-2120, mat4_determinant(&m));
 }
 
 static void test_m4_not_invertible(void)
@@ -279,7 +279,7 @@ static void test_m4_not_invertible(void)
         { 0, -5, 1, -5 },
         { 0, 0, 0, 0 },
     }};
-    TEST_ASSERT_EQUAL_FLOAT(0, mat4_determinant(&m));
+    TEST_ASSERT_EQUAL_DOUBLE(0, mat4_determinant(&m));
 }
 
 static void test_m4_invert1(void)
@@ -300,11 +300,11 @@ static void test_m4_invert1(void)
 
     Mat4 inv = mat4_invert(&m);
 
-    TEST_ASSERT_EQUAL_FLOAT(532, mat4_determinant(&m));
-    TEST_ASSERT_EQUAL_FLOAT(-160, mat4_cofactor(&m, 2, 3));
-    TEST_ASSERT_EQUAL_FLOAT(-160.0/532.0, inv.elem[3][2]);
-    TEST_ASSERT_EQUAL_FLOAT(105, mat4_cofactor(&m, 3, 2));
-    TEST_ASSERT_EQUAL_FLOAT(105.0/532.0, inv.elem[2][3]);
+    TEST_ASSERT_EQUAL_DOUBLE(532, mat4_determinant(&m));
+    TEST_ASSERT_EQUAL_DOUBLE(-160, mat4_cofactor(&m, 2, 3));
+    TEST_ASSERT_EQUAL_DOUBLE(-160.0/532.0, inv.elem[3][2]);
+    TEST_ASSERT_EQUAL_DOUBLE(105, mat4_cofactor(&m, 3, 2));
+    TEST_ASSERT_EQUAL_DOUBLE(105.0/532.0, inv.elem[2][3]);
     TEST_ASSERT_TRUE(mat4_equals(&exp, &inv));
 }
 

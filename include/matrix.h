@@ -7,17 +7,17 @@
 #include "tuple.h"
 
 typedef union Mat2 {
-    f32 elem[2][2];
+    f64 elem[2][2];
     Vec2 rows[2];
 } Mat2;
 
 typedef union Mat3 {
-    f32 elem[3][3];
+    f64 elem[3][3];
     Vec3 rows[3];
 } Mat3;
 
 typedef union Mat4 {
-    f32 elem[4][4];
+    f64 elem[4][4];
     Tuple rows[4];
 } Mat4;
 
@@ -86,19 +86,19 @@ Tuple mat4_vector_mul(const Mat4 *m, const Vec4 *v);
 
 Mat4 mat4_transpose(const Mat4 *m);
 
-f32 mat2_determinant(const Mat2 *m);
+f64 mat2_determinant(const Mat2 *m);
 
-f32 mat3_minor(const Mat3 *m, u32 row, u32 col);
+f64 mat3_minor(const Mat3 *m, u32 row, u32 col);
 
-f32 mat4_minor(const Mat4 *m, u32 row, u32 col);
+f64 mat4_minor(const Mat4 *m, u32 row, u32 col);
 
-f32 mat3_cofactor(const Mat3 *m, u32 row, u32 col);
+f64 mat3_cofactor(const Mat3 *m, u32 row, u32 col);
 
-f32 mat4_cofactor(const Mat4 *m, u32 row, u32 col);
+f64 mat4_cofactor(const Mat4 *m, u32 row, u32 col);
 
-f32 mat3_determinant(const Mat3 *m);
+f64 mat3_determinant(const Mat3 *m);
 
-f32 mat4_determinant(const Mat4 *m);
+f64 mat4_determinant(const Mat4 *m);
 
 Mat2 mat3_submatrix(const Mat3 *m, u32 row, u32 col);
 

@@ -14,7 +14,7 @@ bool tuple_is_vector(const Tuple *t)
     return t->w == 0.0;
 }
 
-static bool vector_equal(const f32 *a, const f32 *b, size_t len)
+static bool vector_equal(const f64 *a, const f64 *b, size_t len)
 {
     for (size_t i = 0; i < len; ++i) {
         if (!fequal(*(a + i), *(b + i))) {
@@ -54,12 +54,12 @@ Tuple tuple_neg(const Tuple *t)
     return tuple(-t->x, -t->y, -t->z, -t->w);
 }
 
-Tuple tuple_mul(const Tuple *t, float v)
+Tuple tuple_mul(const Tuple *t, f64 v)
 {
     return tuple(t->x * v, t->y * v, t->z * v, t->w * v);
 }
 
-Tuple tuple_div(const Tuple *t, float v)
+Tuple tuple_div(const Tuple *t, f64 v)
 {
     return tuple(t->x / v, t->y / v, t->z / v, t->w / v);
 }
@@ -69,21 +69,21 @@ Tuple tuple_prod(const Tuple *a, const Tuple *b)
     return color(a->r * b->r, a->g * b->g, a->b * b->b);
 }
 
-float tuple_magnitude(const Tuple *t)
+f64 tuple_magnitude(const Tuple *t)
 {
     return sqrt(pow(t->x, 2) + pow(t->y, 2) + pow(t->z, 2) + pow(t->w, 2));
 }
 
 Tuple tuple_normalize(const Tuple *t)
 {
-    float magnitude = tuple_magnitude(t);
+    f64 magnitude = tuple_magnitude(t);
     return tuple(t->x / magnitude,
                  t->y / magnitude,
                  t->z / magnitude,
                  t->w / magnitude);
 }
 
-float tuple_dot(const Tuple *a, const Tuple *b)
+f64 tuple_dot(const Tuple *a, const Tuple *b)
 {
     return a->x * b->x + a->y * b->y + a->z * b->z + a->w * b->w;
 }

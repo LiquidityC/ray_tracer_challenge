@@ -16,13 +16,19 @@ Color material_lighting(const Material *m,
                         const PointLight *light,
                         const Point *point,
                         const Vec4 *eyev,
-                        const Vec4 *normal)
+                        const Vec4 *normal,
+                        bool in_shadow)
 {
     Color effective_color = tuple_prod(&m->color, &light->intensity);
+    Color ambient = tuple_mul(&effective_color, m->ambient);
+
+    if (in_shadow) {
+        return ambient;
+    }
+
     Vec4 lightv = tuple_sub(&light->position, point);
     lightv = tuple_normalize(&lightv);
-    Color ambient = tuple_mul(&effective_color, m->ambient);
-    f32 light_dot_normal = tuple_dot(&lightv, normal);
+    f64 light_dot_normal = tuple_dot(&lightv, normal);
 
     Color diffuse = BLACK;
     Color specular = BLACK;
@@ -30,10 +36,10 @@ Color material_lighting(const Material *m,
         diffuse = tuple_mul(&effective_color, m->diffuse * light_dot_normal);
         Vec4 neg_lightv = tuple_neg(&lightv);
         Vec4 reflectv = tuple_reflect(&neg_lightv, normal);
-        f32 reflect_dot_eye = tuple_dot(&reflectv, eyev);
+        f64 reflect_dot_eye = tuple_dot(&reflectv, eyev);
 
         if (reflect_dot_eye > 0) {
-            f32 factor = pow(reflect_dot_eye, m->shininess);
+            f64 factor = pow(reflect_dot_eye, m->shininess);
             specular = tuple_mul(&light->intensity, m->specular * factor);
         }
     }

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "float.h"
 #include "intersection.h"
 
 void intersects_init(Intersects *xs)
@@ -8,7 +9,7 @@ void intersects_init(Intersects *xs)
     xs->head = NULL;
 }
 
-void intersects_add(Intersects *xs, f32 t, Object *object)
+void intersects_add(Intersects *xs, f64 t, const Object *object)
 {
     Intersect i = { t, object };
     intersects_push(xs, i);
@@ -78,7 +79,6 @@ Intersect* intersect_hit(const Intersects *xs)
         return NULL;
     }
 
-
     Xsn *ptr = xs->head;
     while (ptr != NULL && ptr->x.t < 0) 
         ptr = ptr->next;
@@ -95,7 +95,8 @@ Color intersect_shade_hit(const World *w, const IntersectPrecomp *comp)
     Color c = color(1, 1, 1);
     for (size_t i = 0; i < w->lights.len; ++i) {
         PointLight *light = &w->lights.objects[i];
-        Color shade =  material_lighting(&comp->object->material, light, &comp->point, &comp->eyev, &comp->normalv);
+        bool shadowed = world_is_shadowed(w, i, &comp->over_point);
+        Color shade =  material_lighting(&comp->object->material, light, &comp->over_point, &comp->eyev, &comp->normalv, shadowed);
         c = tuple_prod(&c, &shade);
     }
     return c;
@@ -118,7 +119,7 @@ void intersects_destroy(Intersects *xs)
     xs->head = NULL;
 }
 
-IntersectPrecomp intersect_precomp(Intersect *i, Ray *r)
+IntersectPrecomp intersect_precomp(const Intersect *i, const Ray *r)
 {
     IntersectPrecomp comp = {0};
     comp.t = i->t;
@@ -132,10 +133,12 @@ IntersectPrecomp intersect_precomp(Intersect *i, Ray *r)
     } else {
         comp.inside = false;
     }
+    Vec4 norm_e = tuple_mul(&comp.normalv, EPSILON);
+    comp.over_point = tuple_add(&comp.point, &norm_e);
     return comp;
 }
 
-Intersects intersect_sphere(Sphere *s, Ray *r)
+Intersects intersect_sphere(const Sphere *s, const Ray *r)
 {
     Transform inverse = mat4_invert(&s->transform);
     Ray tr = ray_transform(r, &inverse);
@@ -149,18 +152,18 @@ Intersects intersect_sphere(Sphere *s, Ray *r)
     Vec4 s_to_r = tuple_sub(&tr.origin, &origin);
 
     /* Calculate discriminant */
-    f32 a = tuple_dot(&tr.direction, &tr.direction);
-    f32 b = 2.0 * tuple_dot(&tr.direction, &s_to_r);
-    f32 c = tuple_dot(&s_to_r, &s_to_r) - 1.0;
+    f64 a = tuple_dot(&tr.direction, &tr.direction);
+    f64 b = 2.0 * tuple_dot(&tr.direction, &s_to_r);
+    f64 c = tuple_dot(&s_to_r, &s_to_r) - 1.0;
 
-    f32 discriminant = pow(b, 2) - 4.0 * a * c;
+    f64 discriminant = pow(b, 2) - 4.0 * a * c;
 
     if (discriminant < 0) {
         goto out;
     }
 
-    f32 t1 = (-b - sqrt(discriminant)) / (2.0 * a);
-    f32 t2 = (-b + sqrt(discriminant)) / (2.0 * a);
+    f64 t1 = (-b - sqrt(discriminant)) / (2.0 * a);
+    f64 t2 = (-b + sqrt(discriminant)) / (2.0 * a);
 
     intersects_add(&inters, min(t1, t2), s);
     intersects_add(&inters, max(t1, t2), s);
@@ -169,7 +172,7 @@ out:
     return inters;
 }
 
-Intersects intersect_world(Ray *r, World *w)
+Intersects intersect_world(const Ray *r, const World *w)
 {
     Intersects xs;
     intersects_init(&xs);

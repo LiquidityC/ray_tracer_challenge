@@ -48,8 +48,8 @@ static void test_ray_sphere_intersection(void)
     Sphere s = sphere();
     Intersects xs = intersect_sphere(&s, &r);
     TEST_ASSERT_EQUAL_size_t(2, xs.len);
-    TEST_ASSERT_EQUAL_FLOAT(4, intersects_get(&xs, 0)->t);
-    TEST_ASSERT_EQUAL_FLOAT(6, intersects_get(&xs, 1)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(4, intersects_get(&xs, 0)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(6, intersects_get(&xs, 1)->t);
     intersects_destroy(&xs);
 }
 
@@ -59,8 +59,8 @@ static void test_ray_sphere_glance(void)
     Sphere s = sphere();
     Intersects xs = intersect_sphere(&s, &r);
     TEST_ASSERT_EQUAL_size_t(2, xs.len);
-    TEST_ASSERT_EQUAL_FLOAT(5, intersects_get(&xs, 0)->t);
-    TEST_ASSERT_EQUAL_FLOAT(5, intersects_get(&xs, 1)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(5, intersects_get(&xs, 0)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(5, intersects_get(&xs, 1)->t);
     intersects_destroy(&xs);
 }
 
@@ -79,8 +79,8 @@ static void test_ray_sphere_inside(void)
     Sphere s = sphere();
     Intersects xs = intersect_sphere(&s, &r);
     TEST_ASSERT_EQUAL_size_t(2, xs.len);
-    TEST_ASSERT_EQUAL_FLOAT(-1, intersects_get(&xs, 0)->t);
-    TEST_ASSERT_EQUAL_FLOAT(1, intersects_get(&xs, 1)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(-1, intersects_get(&xs, 0)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(1, intersects_get(&xs, 1)->t);
     intersects_destroy(&xs);
 }
 
@@ -90,8 +90,8 @@ static void test_ray_sphere_behind(void)
     Sphere s = sphere();
     Intersects xs = intersect_sphere(&s, &r);
     TEST_ASSERT_EQUAL_size_t(2, xs.len);
-    TEST_ASSERT_EQUAL_FLOAT(-6, intersects_get(&xs, 0)->t);
-    TEST_ASSERT_EQUAL_FLOAT(-4, intersects_get(&xs, 1)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(-6, intersects_get(&xs, 0)->t);
+    TEST_ASSERT_EQUAL_DOUBLE(-4, intersects_get(&xs, 1)->t);
     intersects_destroy(&xs);
 }
 

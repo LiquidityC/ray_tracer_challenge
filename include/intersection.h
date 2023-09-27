@@ -10,14 +10,15 @@
 #include "world.h"
 
 typedef struct Intersect {
-    f32 t;
-    Object *object;
+    f64 t;
+    const Object *object;
 } Intersect;
 
 typedef struct IntersectPrecomp {
-    f32 t;
-    Object *object;
+    f64 t;
+    const Object *object;
     Point point;
+    Point over_point;
     Vec4 eyev;
     Vec4 normalv;
     bool inside;
@@ -39,9 +40,9 @@ void intersects_init(Intersects *xs);
 
 Intersects intersects(int n, ...);
 
-Intersects intersects_new(f32 t, f32 o);
+Intersects intersects_new(f64 t, f64 o);
 
-void intersects_add(Intersects *xs, f32 t, Object *object);
+void intersects_add(Intersects *xs, f64 t, const Object *object);
 
 void intersects_push(Intersects *xs, Intersect x);
 
@@ -57,14 +58,14 @@ bool intersect_equal(const Intersect *a, const Intersect *b);
 
 void intersects_destroy(Intersects *xs);
 
-IntersectPrecomp intersect_precomp(Intersect *i, Ray *r);
+IntersectPrecomp intersect_precomp(const Intersect *i, const Ray *r);
 
 /**
  * \brief Find intersections between a ray and a sphere's 'hull'
  */
-Intersects intersect_sphere(Sphere *s, Ray *r);
+Intersects intersect_sphere(const Sphere *s, const Ray *r);
 
-Intersects intersect_world(Ray *r, World *w);
+Intersects intersect_world(const Ray *r, const World *w);
 
 
 #endif // _INTERSECTION_H_

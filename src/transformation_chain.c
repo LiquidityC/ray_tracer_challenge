@@ -51,32 +51,32 @@ void chain_begin_vec4(Vec4 v)
     instance.open = true;
 }
 
-void trans(f32 x, f32 y, f32 z)
+void trans(f64 x, f64 y, f64 z)
 {
     apply(translation(x, y, z));
 }
 
-void scal(f32 x, f32 y, f32 z)
+void scal(f64 x, f64 y, f64 z)
 {
     apply(scaling(x, y, z));
 }
 
-void rot_x(f32 r)
+void rot_x(f64 r)
 {
     apply(rotation_x(r));
 }
 
-void rot_y(f32 r)
+void rot_y(f64 r)
 {
     apply(rotation_y(r));
 }
 
-void rot_z(f32 r)
+void rot_z(f64 r)
 {
     apply(rotation_z(r));
 }
 
-void shear(f32 xy, f32 xz, f32 yx, f32 yz, f32 zx, f32 zy)
+void shear(f64 xy, f64 xz, f64 yx, f64 yz, f64 zx, f64 zy)
 {
     apply(shearing(xy, xz, yx, yz, zx, zy));
 }
